@@ -46,6 +46,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# STOMPY_CLI_FLAGS lets the caller target staging, e.g. STOMPY_CLI_FLAGS=--use-staging
+stompy() { command stompy ${STOMPY_CLI_FLAGS:-} "$@"; }
+
 command -v stompy  >/dev/null || { echo "Error: stompy CLI not found in PATH"; exit 1; }
 command -v python3 >/dev/null || { echo "Error: python3 required"; exit 1; }
 [ -f "$CANONICAL_CONTEXTS" ] || { echo "Error: missing $CANONICAL_CONTEXTS"; exit 1; }
@@ -113,6 +116,7 @@ for row in json.load(sys.stdin):
 ")
 
 TIX_DRIFT=0
+TIX_FAIL=""
 while IFS= read -r id; do
   [ -z "$id" ] && continue
   if grep -qxF "$id" "$CANON_TIX_FILE"; then
@@ -124,6 +128,7 @@ while IFS= read -r id; do
         echo "  PARKED     DF-$id"
       else
         echo "  !! could not park DF-$id (transition refused — handle manually)"
+        TIX_FAIL="$TIX_FAIL${TIX_FAIL:+,}$id"
       fi
     else
       echo "  WOULD PARK DF-$id"
@@ -135,6 +140,12 @@ done <<< "$TICKETS"
 
 echo ""
 echo "═══════════════════════════════════════════════════════════════════"
+if [ -n "$TIX_FAIL" ]; then
+  echo "  !! FAILED to park: $TIX_FAIL — fixture is NOT clean."
+  echo "     The CLI cannot pass the reason the server requires for 'parked'. Use the MCP ticket tool:"
+  echo "     ticket(action=batch_move, status=parked, ticket_ids=\"$TIX_FAIL\", reason=..., confirm=true, project=$PROJECT)"
+  exit 1
+fi
 echo "  Residue found: $CTX_DRIFT context topic(s), $TIX_DRIFT ticket(s)"
 if [ "$APPLY" = true ]; then
   echo "  Applied. Manifest: $MANIFEST_DIR"

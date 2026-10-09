@@ -13,7 +13,7 @@ if [ -z "${DEMENTIA_API_KEY:-}" ]; then
   exit 1
 fi
 
-API_URL="https://api.stompy.ai"
+API_URL="${BENCH_STOMPY_URL:-https://api.stompy.ai}"
 AUTH="Authorization: Bearer $DEMENTIA_API_KEY"
 
 echo "Pre-loading dollar-flights contexts into Stompy..."

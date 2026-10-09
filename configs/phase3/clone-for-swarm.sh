@@ -102,7 +102,7 @@ if [ "$CONDITION" = "stompy" ]; then
   "mcpServers": {
     "stompy": {
       "type": "sse",
-      "url": "https://api.stompy.ai/mcp/sse",
+      "url": "${BENCH_STOMPY_URL:-https://api.stompy.ai}/mcp/sse",
       "headers": {
         "Authorization": "Bearer ${DEMENTIA_API_KEY}"
       }

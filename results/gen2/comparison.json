@@ -1,0 +1,170 @@
+[
+  {
+    "model": "claude-opus-4-6",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "stompy",
+    "score": 38,
+    "max_score": 40,
+    "tokens": {
+      "input": 101,
+      "output": 64257,
+      "cache_read": 3698253,
+      "cache_creation": 344931,
+      "total": 4107542
+    },
+    "cost_usd": 5.9511,
+    "timing": {
+      "wall_clock_seconds": 617,
+      "api_seconds": 1088.98
+    },
+    "turns": 50,
+    "is_error": false,
+    "session_id": "900e5424-0116-450d-89bf-291a9d0d6a82",
+    "efficiency": {
+      "tokens_per_point": 108093.0,
+      "cost_per_point": 0.1566,
+      "points_per_minute": 3.6953
+    }
+  },
+  {
+    "model": "claude-opus-4-6",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "nomemory",
+    "score": 40,
+    "max_score": 40,
+    "tokens": {
+      "input": 109,
+      "output": 57518,
+      "cache_read": 6495224,
+      "cache_creation": 407640,
+      "total": 6960491
+    },
+    "cost_usd": 7.7634,
+    "timing": {
+      "wall_clock_seconds": 469,
+      "api_seconds": 947.73
+    },
+    "turns": 74,
+    "is_error": false,
+    "session_id": "59d0977e-382a-44c1-904f-a64d4af7c0c2",
+    "efficiency": {
+      "tokens_per_point": 174012.0,
+      "cost_per_point": 0.1941,
+      "points_per_minute": 5.1173
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "stompy",
+    "score": 40,
+    "max_score": 40,
+    "tokens": {
+      "input": 128,
+      "output": 60698,
+      "cache_read": 4129911,
+      "cache_creation": 281972,
+      "total": 4472709
+    },
+    "cost_usd": 3.3291,
+    "timing": {
+      "wall_clock_seconds": 431,
+      "api_seconds": 818.88
+    },
+    "turns": 32,
+    "is_error": false,
+    "session_id": "1975ae81-59a4-4636-8e42-91bd0ea21473",
+    "efficiency": {
+      "tokens_per_point": 111818.0,
+      "cost_per_point": 0.0832,
+      "points_per_minute": 5.5684
+    }
+  },
+  {
+    "model": "claude-sonnet-4-6",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "nomemory",
+    "score": 40,
+    "max_score": 40,
+    "tokens": {
+      "input": 94,
+      "output": 62125,
+      "cache_read": 6184315,
+      "cache_creation": 283066,
+      "total": 6529600
+    },
+    "cost_usd": 4.1061,
+    "timing": {
+      "wall_clock_seconds": 390,
+      "api_seconds": 753.44
+    },
+    "turns": 68,
+    "is_error": false,
+    "session_id": "b78c0e6a-6950-4a03-9604-9f41b7dd063d",
+    "efficiency": {
+      "tokens_per_point": 163240.0,
+      "cost_per_point": 0.1027,
+      "points_per_minute": 6.1538
+    }
+  },
+  {
+    "model": "claude-haiku-4-5",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "stompy",
+    "score": 31,
+    "max_score": 40,
+    "tokens": {
+      "input": 1147,
+      "output": 80291,
+      "cache_read": 7093233,
+      "cache_creation": 315533,
+      "total": 7490204
+    },
+    "cost_usd": 1.5516,
+    "timing": {
+      "wall_clock_seconds": 372,
+      "api_seconds": 755.5
+    },
+    "turns": 24,
+    "is_error": false,
+    "session_id": "17827f77-772a-473c-9810-e4c1838253d3",
+    "efficiency": {
+      "tokens_per_point": 241619.0,
+      "cost_per_point": 0.0501,
+      "points_per_minute": 5.0
+    }
+  },
+  {
+    "model": "claude-haiku-4-5",
+    "provider": "anthropic",
+    "runner": "claude-code",
+    "condition": "nomemory",
+    "score": 40,
+    "max_score": 40,
+    "tokens": {
+      "input": 1337,
+      "output": 123053,
+      "cache_read": 11244704,
+      "cache_creation": 422493,
+      "total": 11791587
+    },
+    "cost_usd": 2.3327,
+    "timing": {
+      "wall_clock_seconds": 614,
+      "api_seconds": 1119.18
+    },
+    "turns": 52,
+    "is_error": false,
+    "session_id": "b5dca70a-bb67-4893-b3c8-35b2ed710d8a",
+    "efficiency": {
+      "tokens_per_point": 294790.0,
+      "cost_per_point": 0.0583,
+      "points_per_minute": 3.9088
+    }
+  }
+]
