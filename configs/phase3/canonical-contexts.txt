@@ -1,0 +1,26 @@
+# Canonical context topics for the Phase 3 stompy fixture (`dollar_flights`).
+#
+# The `stompy` condition runs against a SHARED live project, so every run
+# leaves residue behind: the lead's architecture lock, teammate decisions,
+# tickets, and so on. A re-run is only comparable to the original Phase 3
+# numbers if the project starts from the SAME memory the first run did.
+#
+# Rule: a topic is canonical if it existed BEFORE the first stompy benchmark
+# run (preload ran 2026-02-28 16:46). Everything else is benchmark residue and
+# is archived by configs/phase3/reset-stompy-state.sh.
+#
+# Do NOT add benchmark-generated topics here — that silently re-pollutes the
+# fixture. If the preload changes, update preload-stompy-contexts.sh first.
+
+# ── Preloaded by preload-stompy-contexts.sh (2026-02-28 16:46) ──────────────
+dollar_flights_architecture
+dollar_flights_duffel_integration
+dollar_flights_payment_patterns
+dollar_flights_frontend_patterns
+dollar_flights_testing_patterns
+
+# ── Legacy project memory that predates the benchmark (kept to preserve it) ─
+database-migration-neondb
+neondb-cold-start-improvements
+bug_sleep_no_session_continued_conversations
+dementia-cloud-sleep-bug

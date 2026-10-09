@@ -38,8 +38,16 @@ fi
 
 echo "Phase 3: Creating fresh copy from dollar-flights-snapshot/"
 
-# Remove any previous run for this condition
-rm -rf "$RUN_DIR"
+# Preserve any previous run for this condition instead of destroying it.
+# Run artifacts are measurements — never delete them silently. See
+# configs/benchmark-protocol.md ("Artifacts are append-only").
+if [ -d "$RUN_DIR" ]; then
+  ARCHIVE_ROOT="$PROJECT_ROOT/runs/_archive"
+  ARCHIVE_DIR="$ARCHIVE_ROOT/$(date +%Y%m%d-%H%M%S)-$(basename "$RUN_DIR")"
+  mkdir -p "$ARCHIVE_ROOT"
+  mv "$RUN_DIR" "$ARCHIVE_DIR"
+  echo "  Archived previous run -> $ARCHIVE_DIR"
+fi
 mkdir -p "$RUN_DIR"
 
 # Copy snapshot (excludes .git since it was already stripped)
@@ -82,6 +90,29 @@ else
   rm -f "$RUN_DIR/.mcp.json"
 fi
 
+# ─── OpenCode config (for non-Anthropic runners) ──────────────────────
+
+# If this model uses OpenCode, inject .opencode/config.json for MCP
+if [ "$CONDITION" = "stompy" ]; then
+  OPENCODE_DIR="$RUN_DIR/.opencode"
+  mkdir -p "$OPENCODE_DIR"
+  if [ -n "${DEMENTIA_API_KEY:-}" ]; then
+    cat > "$OPENCODE_DIR/config.json" << OCEOF
+{
+  "mcpServers": {
+    "stompy": {
+      "type": "sse",
+      "url": "https://api.stompy.ai/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer ${DEMENTIA_API_KEY}"
+      }
+    }
+  }
+}
+OCEOF
+  fi
+fi
+
 # ─── Summary ─────────────────────────────────────────────────────────
 
 echo ""
@@ -89,13 +120,14 @@ echo "Run directory ready: $RUN_DIR"
 echo "  Model:     $MODEL"
 echo "  Condition: $CONDITION"
 echo "  Config:    $CLAUDE_DIR/settings.local.json"
-[[ "$CONDITION" == stompy* ]] && echo "  MCP:       $RUN_DIR/.mcp.json"
+[[ "$CONDITION" == stompy* ]] && echo "  MCP:       $RUN_DIR/.mcp.json (Claude Code)"
+[[ "$CONDITION" == stompy* ]] && echo "  MCP:       $RUN_DIR/.opencode/config.json (OpenCode)"
 echo ""
 
 # Neutrality verification
 echo "Neutrality checks:"
-[[ "$CONDITION" == stompy* ]] && echo "  ✓ .mcp.json injected for Stompy MCP access"
-[[ "$CONDITION" != stompy* ]] && echo "  ✓ No .mcp.json — Stompy MCP NOT available"
+[[ "$CONDITION" == stompy* ]] && echo "  ✓ MCP configs injected for Stompy access (both runners)"
+[[ "$CONDITION" != stompy* ]] && echo "  ✓ No MCP configs — Stompy NOT available"
 echo "  ✓ Fresh snapshot copy (no state from other runs)"
 echo "  ✓ No .git directory (prevents history-based knowledge)"
 echo "  ✓ No .env files (prevents secret leakage)"
