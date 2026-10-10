@@ -112,3 +112,27 @@ def test_really_killed_process_is_invalid_not_zero(monkeypatch, tmp_path):
     assert row["score"] is None and row["cost_usd"] is None
     assert row["exit_code"] < 0
     assert report["observed_runs"] == 1 and report["expected_runs"] == 4
+
+
+def test_no_teammate_is_task_fail_with_a_complete_matrix(monkeypatch, tmp_path):
+    args = setup(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        harness,
+        "run_cell",
+        lambda *a, **kw: {"outcome": "OK", "delegated_calls": 0, "cost_usd": 0.01},
+    )
+    monkeypatch.setattr(
+        harness,
+        "grade",
+        lambda *a: {
+            "outcome": "OK",
+            "total_score": 5,
+            "total_max": 5,
+            "critical_passed": True,
+            "checks": [],
+        },
+    )
+    assert harness.run(args) == 0
+    report = json.loads((tmp_path / "test/report.json").read_text())
+    assert report["matrix_valid"] and len(report["runs"]) == 4
+    assert all(r["outcome"] == "TASK_FAIL" and r["score"] == 5 for r in report["runs"])

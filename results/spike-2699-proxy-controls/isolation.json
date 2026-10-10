@@ -1,0 +1,20 @@
+{
+  "agent_version": "2.1.296 (Claude Code)",
+  "launch_env_keys": [
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_BASE_URL",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "CLAUDE_CONFIG_DIR",
+    "ENABLE_TOOL_SEARCH",
+    "HOME",
+    "LANG",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE"
+  ],
+  "provider_key_in_docker_config": false,
+  "agent_mounts": [
+    "/home/benchmark"
+  ],
+  "provider_requests": 0,
+  "gateway_loopback_ready": true
+}

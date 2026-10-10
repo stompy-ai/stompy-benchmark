@@ -40,13 +40,13 @@ CONTROLS = {
 }
 
 
-def execute(root, xml):
+def execute(root, xml, test_file="tests/spike/test_integrity.py"):
     process = subprocess.run(
         [
             sys.executable,
             "-m",
             "pytest",
-            "tests/spike/test_integrity.py",
+            test_file,
             "-q",
             "--junitxml=" + str(xml),
         ],

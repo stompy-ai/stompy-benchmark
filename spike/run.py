@@ -89,7 +89,7 @@ def run(args) -> int:
                     snapshot(Path(args.backend), cell / "work")
                     assert_fixture(manifest, inventory(client))
                     memory = (
-                        "Use only the injected stompy MCP server, project stompy_benchmark. Recall release_failure_vectors and stompy_working_rules before acting; the historical surface-contract ticket is available there. Treat the canonical fixture as read-only."
+                        "Use only the injected stompy MCP server, project stompy_benchmark. Discover and recall this project's working rules and release-gate rules before acting. Treat the canonical fixture as read-only."
                         if condition == "stompy"
                         else "Work from the supplied source and task. No memory service is available."
                     )
@@ -121,6 +121,14 @@ def run(args) -> int:
                             critical_passed=scores.get("critical_passed"),
                             checks=scores["checks"],
                             reason=scores.get("reason"),
+                        )
+                    if (
+                        row["outcome"] in {"OK", "TASK_FAIL"}
+                        and row.get("delegated_calls") == 0
+                    ):
+                        row.update(
+                            outcome="TASK_FAIL",
+                            reason="task requires delegation; lead worked alone",
                         )
                     post_fixture = inventory(client)
                     (cell / "post-fixture.json").write_text(

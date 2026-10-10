@@ -45,6 +45,9 @@ class MCP:
                 session = response.headers.get("Mcp-Session-Id")
                 if session:
                     self.headers["Mcp-Session-Id"] = session
+        except urllib.error.HTTPError as error:
+            tool = params.get("name", method)
+            raise RuntimeError(f"MCP {tool} HTTP {error.code}") from None
         except Exception as error:
             raise RuntimeError(
                 f"MCP transport failed: {type(error).__name__}"
@@ -61,7 +64,9 @@ class MCP:
         else:
             payload = json.loads(raw)
         if "error" in payload:
-            raise ValueError("MCP protocol error")
+            tool = params.get("name", method)
+            code = payload["error"].get("code", "unknown")
+            raise ValueError(f"MCP {tool} protocol error code={code}")
         return payload["result"]
 
     def call(self, name, arguments, *, allow_error=False):

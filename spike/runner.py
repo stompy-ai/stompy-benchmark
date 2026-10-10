@@ -7,6 +7,8 @@ import subprocess
 import time
 from pathlib import Path
 
+from spike.gateway import evidence as gateway_evidence
+from spike.gateway import gateway
 from spike.integrity import assess_run, tool_histograms, verify_delegates
 from spike.mcp import STAGING
 
@@ -57,22 +59,8 @@ def run_cell(
     kill_after: float | None = None,
 ) -> dict:
     output.mkdir(parents=True, exist_ok=False)
-    provider = {
-        k: os.environ[k]
-        for k in ("ANTHROPIC_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN")
-        if os.environ.get(k)
-    }
-    if not provider:
-        raise ValueError("Provider authentication missing")
-    if len(provider) != 1:
-        raise ValueError("Supply one explicit provider credential")
-    if any("\n" in v or "\r" in v for v in provider.values()):
-        raise ValueError("invalid provider credential")
     home = output / "home"
     prepare_home(home, condition, os.environ.get("STOMPY_BENCHMARK_API_KEY", ""))
-    secret = output / "provider.env"
-    secret.touch(mode=0o600)
-    secret.write_text("".join(f"{k}={v}\n" for k, v in provider.items()))
     # Only the submission and a fresh home are mounted; never the harness,
     # hidden tests, operator home, host sockets, GitHub creds or backend .env.
     for path in [work, *work.rglob("*")]:
@@ -100,8 +88,16 @@ def run_cell(
         "--read-only",
         "--tmpfs",
         "/tmp:rw,nosuid,size=256m",
-        "--env-file",
-        str(secret.resolve()),
+        "--network",
+        "container:PLACEHOLDER",
+        "-e",
+        "ANTHROPIC_BASE_URL=http://127.0.0.1:18777",
+        "-e",
+        "ANTHROPIC_AUTH_TOKEN=local-gateway-only",
+        "-e",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL=" + MODEL,
+        "-e",
+        "CLAUDE_CODE_SUBAGENT_MODEL=" + MODEL,
         "-v",
         f"{work.resolve()}:/work",
         "-v",
@@ -127,15 +123,52 @@ def run_cell(
         "project",
     ]
     started = time.monotonic()
+    try:
+        with gateway(output, budget) as proxy:
+            command[command.index("container:PLACEHOLDER")] = (
+                "container:" + proxy["container"]
+            )
+            return _execute_cell(
+                command,
+                work,
+                output,
+                home,
+                condition,
+                image,
+                timeout,
+                kill_after,
+                name,
+                started,
+            )
+    finally:
+        (home / ".mcp.json").unlink(missing_ok=True)
+
+
+def _execute_cell(
+    command, work, output, home, condition, image, timeout, kill_after, name, started
+):
     killed = False
     try:
         with (output / "stream.ndjson").open("w") as stdout, (
             output / "stderr.log"
         ).open("w") as stderr:
             process = subprocess.Popen(command, stdout=stdout, stderr=stderr)
-            deadline = started + (kill_after if kill_after is not None else timeout)
+            agent_started = time.monotonic()
+            deadline = agent_started + (
+                kill_after if kill_after is not None else timeout
+            )
             while process.poll() is None:
                 if time.monotonic() > deadline:
+                    # A real paid kill requires an accepted upstream request,
+                    # not a timer expiring during vault/container startup.
+                    accepted = gateway_evidence(output).get("accepted_requests", 0)
+                    if (
+                        kill_after is not None
+                        and not accepted
+                        and time.monotonic() - agent_started < 60
+                    ):
+                        time.sleep(0.25)
+                        continue
                     subprocess.run(["docker", "kill", name], capture_output=True)
                     killed = True
                     break
@@ -147,7 +180,6 @@ def run_cell(
                 code = process.wait()
     finally:
         subprocess.run(["docker", "rm", "-f", name], capture_output=True)
-        secret.unlink(missing_ok=True)
         (home / ".mcp.json").unlink(missing_ok=True)
     row = {
         "condition": condition,
@@ -171,7 +203,11 @@ def run_cell(
             "LANG",
             "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
             "PYTHONDONTWRITEBYTECODE",
-            *provider,
+            "ENABLE_TOOL_SEARCH",
+            "ANTHROPIC_BASE_URL",
+            "ANTHROPIC_AUTH_TOKEN",
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+            "CLAUDE_CODE_SUBAGENT_MODEL",
         }
         if set(env_keys) != allowed:
             raise ValueError("unexpected launch environment")
@@ -184,7 +220,11 @@ def run_cell(
         row.update(outcome="INVALID", score=None, reason=str(error))
     # Raw evidence remains local. Redact exact supplied credentials before
     # any artifact can be selected for publication; .mcp.json was removed.
-    secrets = [*provider.values(), os.environ.get("STOMPY_BENCHMARK_API_KEY", "")]
+    row["gateway"] = gateway_evidence(output)
+    row["paid_request_accepted"] = row["gateway"].get("accepted_requests", 0) > 0
+    if row["gateway"]["billing_unknown"]:
+        row.update(outcome="INVALID", score=None, reason="gateway billing unknown")
+    secrets = [os.environ.get("STOMPY_BENCHMARK_API_KEY", "")]
     for path in output.rglob("*"):
         if path.is_file() and not path.is_symlink():
             try:

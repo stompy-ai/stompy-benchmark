@@ -119,8 +119,6 @@ def verify_delegates(streams: dict) -> dict:
                     result = event.get("tool_use_result")
                     if isinstance(result, dict) and result.get("agentId"):
                         linked[block["tool_use_id"]] = "agent-" + result["agentId"]
-    if not calls:
-        raise ValueError("no teammate was observed")
     for call in calls:
         if call in parent_events:
             continue

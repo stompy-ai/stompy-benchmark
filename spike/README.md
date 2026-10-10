@@ -22,9 +22,28 @@ Provide `STOMPY_BENCHMARK_PROJECT=stompy_benchmark` and
 `STOMPY_BENCHMARK_API_KEY` through the operator-approved local environment or CI
 secrets. The operator already holds those values in
 `~/.config/stompy/benchmark.env`. The harness only reads environment variables.
-Also provide exactly one explicitly authorized provider credential:
-`ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN`. The harness never reads a keychain
-or copies the operator's Claude login/configuration.
+Provider access uses only the expressly authorized 1Password field
+`op://Stompy/stompy-prod/ANTHROPIC_API_KEY_STOMPY_BENCHMARK`.
+`start_gateway.sh` sources `~/.config/stompy/op.env`, reads that field into a
+shell variable, and sends it over stdin to a private model gateway container.
+It never writes a credential file or puts the provider key in Docker Config.Env.
+The agent shares only the gateway's network namespace and receives a loopback
+URL plus a non-secret local placeholder token. Provider keys, vault tokens,
+operator login/configuration and gateway mounts are absent from the agent.
+The grader and publisher get no provider credential.
+
+The gateway permits only pinned Sonnet message/count-token requests. It
+serializes reservations before billable requests, caps tokens and dollars,
+rejects premium/server-tool requests, and retains the reservation on unknown
+billing. The CLI's own budget is a second limit. A killed stream's cost remains
+unknown even when its conservative reservation is known. The separate Docker
+control uses a dummy stdin key and makes zero upstream calls.
+
+Governance decision: this harness lives in the separate `stompy-benchmark`
+repository, outside dementia-production's scanned source tree. No backend
+subprocessor gate or manifest is weakened. Only our own repository source and
+the committed historical engineering fixture may reach the provider; never
+customer corpora. Publishing a CI secret remains Markus's step.
 
 ```sh
 python -m spike.run --gen unique-name --backend /path/to/dementia-production
@@ -51,7 +70,9 @@ logical park/archive reset, not physical erasure or byte-identical DB restoratio
 Each agent gets a fresh HOME and CLAUDE_CONFIG_DIR, a scrubbed environment and
 only its run MCP configuration. Only the frozen source and fresh home are mounted;
 no operator home, sockets, credentials or hidden tests. Nomemory gets no MCP
-servers. Root and every identified child transcript are checked. Unexpected MCP
+servers. Root and every identified child transcript are checked. A lead working alone
+is a task-compliance failure (TASK_FAIL); a missing trace for an observed delegate
+is INVALID. Unexpected MCP
 servers, missing child traces, missing terminal results/costs, nonzero exits,
 missing matrix cells and changed server SHAs fail closed. A memory cell must
 actually call the scoped server. Agents receive read-only-fixture instructions;
@@ -79,6 +100,7 @@ GREEN on the reference are retained in `results/spike-2699-preflight/`.
 python -m pytest tests/spike -q
 python -m spike.red_proof
 python -m spike.check_size
+python -m spike.check_proxy_isolation
 ```
 
 `red_proof` changes only behavior in disposable copies: credential leakage,

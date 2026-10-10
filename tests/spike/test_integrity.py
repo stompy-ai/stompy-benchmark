@@ -161,3 +161,9 @@ def test_nested_teammate_cannot_escape_trace_validation():
     ]
     with pytest.raises(ValueError, match="missing teammate evidence: child-call"):
         verify_delegates({"lead": root, "agent-a": nested})
+
+
+def test_no_delegation_is_observed_task_behavior_not_missing_evidence():
+    from spike.integrity import verify_delegates
+
+    assert verify_delegates({"lead": []})["delegated_calls"] == 0
