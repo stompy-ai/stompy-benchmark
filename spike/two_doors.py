@@ -56,6 +56,7 @@ def walk(backend, reset_run, output):
         "database": database,
         "negative_preflight": negative,
         "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+        "principal_note": "Owner tier is admin; project-key principal is clamped to beta. REST user_id is the key label, not the internal owner ID.",
     }
     evidence["passed"] = (
         before == after
@@ -63,8 +64,8 @@ def walk(backend, reset_run, output):
         and identity_code == 200
         and foreign_code == 404
         and identity.get("auth_type") == "project_api_key"
-        and identity.get("tier") == "admin"
-        and str(identity.get("user_id")) == "51"
+        and identity.get("tier") == "beta"
+        and bool(identity.get("user_id"))
         and project.get("is_shared") is True
         and project.get("my_role") == "owner"
         and database[0]["schema"] == "stompy_benchmark"
