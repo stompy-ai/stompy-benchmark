@@ -3,7 +3,9 @@
 This is an incomplete release-gate spike, branched from `4ec5ffb` (PR #9).
 The committed preflight report is **INCONCLUSIVE**. It is not a benchmark win,
 production gate, or routed-tenant result. See STOMPY-2711: background entity
-extraction can recreate a non-manifest graph edge after an exact reset.
+extraction recreated an inferred graph edge after an exact reset. The manifest
+now explicitly includes that one edge from the retained c40570b2 preflight proof,
+observed before any paid agent ran. Stable replay with readiness is still unproven.
 
 The fixture identity is **project key, team project on MAIN, owner 51/admin**.
 It proves nothing about routed tenants. All fixture traffic uses staging MCP.

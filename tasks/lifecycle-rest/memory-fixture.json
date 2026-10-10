@@ -31,7 +31,16 @@
       }
     }
   ],
-  "links": [],
+  "links": [
+    {
+      "source_label": "stompy_working_rules",
+      "target_label": "release_failure_vectors",
+      "link_type": "entity",
+      "provenance": "inferred",
+      "rationale": null,
+      "grounding": null
+    }
+  ],
   "tickets": [
     {
       "title": "Historical surface cohesion contract (STOMPY-1585)",
@@ -44,5 +53,10 @@
         "updated_at": 1787654793.1582174
       }
     }
-  ]
+  ],
+  "derived_graph_source": {
+    "evidence": "results/spike-2699-preflight/fixture-proof.json",
+    "server_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a",
+    "reason": "Explicitly freeze the inferred edge already observed at the pinned task SHA, before any paid agent ran. No post-task answers are adopted. Readiness plus full comparison must reproduce this edge; extra or missing edges remain INVALID."
+  }
 }
