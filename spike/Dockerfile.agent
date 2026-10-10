@@ -1,0 +1,18 @@
+# Local dependency image is verified against images.json before building.
+FROM stompy-2444-cienv2:latest AS deps
+FROM node:22-bookworm AS node
+FROM python:3.11-slim-bookworm
+COPY --from=deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && apt-get update && apt-get install -y --no-install-recommends libpq5 git ripgrep \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g @anthropic-ai/claude-code@2.1.296 \
+    && npm cache clean --force \
+    && useradd -m -u 1000 benchmark
+COPY integrity.py /usr/local/lib/python3.11/site-packages/benchmark_integrity.py
+COPY agent_entry.py /usr/local/bin/bench-entry.py
+WORKDIR /work
+USER benchmark
+ENTRYPOINT ["python", "-I", "/usr/local/bin/bench-entry.py"]

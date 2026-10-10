@@ -1,0 +1,28 @@
+{
+  "server_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a",
+  "reset_exact_readback": {
+    "matched": true,
+    "contexts": 2,
+    "links": 0,
+    "tickets": 1,
+    "parked_or_archived_tickets": 0,
+    "sha256": "4dafd282eb47cc43431f4cd8996799719244a810f85b964fbe699da714fbc6f1",
+    "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+  },
+  "delayed_readback_matched": false,
+  "unexpected_edge": {
+    "source_label": "stompy_working_rules",
+    "target_label": "release_failure_vectors",
+    "link_type": "entity",
+    "provenance": "inferred",
+    "rationale": null,
+    "grounding": null
+  },
+  "negative_preflight": {
+    "own_schema": "stompy_benchmark",
+    "other_project": "stompy",
+    "refusal": "INVALID_PROJECT"
+  },
+  "followup": "STOMPY-2711",
+  "paid_agent_calls": 0
+}

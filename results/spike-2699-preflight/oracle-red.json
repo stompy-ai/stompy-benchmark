@@ -1,0 +1,50 @@
+{
+  "outcome": "TASK_FAIL",
+  "total_score": 0,
+  "total_max": 5,
+  "critical_passed": false,
+  "checks": [
+    {
+      "name": "test_transition_response_and_arguments",
+      "critical": false,
+      "passed": false
+    },
+    {
+      "name": "test_invalid_state_is_422",
+      "critical": false,
+      "passed": false
+    },
+    {
+      "name": "test_critical_viewer_cannot_transition",
+      "critical": true,
+      "passed": false
+    },
+    {
+      "name": "test_critical_cross_project_key_refused",
+      "critical": true,
+      "passed": false
+    },
+    {
+      "name": "test_missing_topic_maps_to_404",
+      "critical": false,
+      "passed": false
+    },
+    {
+      "name": "test_idempotent_result_preserved",
+      "critical": false,
+      "passed": false
+    },
+    {
+      "name": "test_contract_names_route_and_keeps_mcp",
+      "critical": false,
+      "passed": false
+    },
+    {
+      "name": "test_critical_authentication_required",
+      "critical": true,
+      "passed": false
+    }
+  ],
+  "grader_image": "sha256:b458acffeef6d5a6e10a1f7375e69d4d7c243697bff114b69f78f2e36e2b4772",
+  "exit_code": 1
+}

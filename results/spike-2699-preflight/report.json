@@ -1,0 +1,40 @@
+{
+  "mode": "shadow",
+  "outcome": "INCONCLUSIVE",
+  "matrix_valid": false,
+  "expected_runs": 4,
+  "observed_runs": 1,
+  "server_build_before": "c40570b266df628ed1f5a9260ba77096d8bfe71a",
+  "server_build_after": "c40570b266df628ed1f5a9260ba77096d8bfe71a",
+  "build_stable": true,
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "hashes": {
+    "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+    "fixture": "0a5ee10361a6a6c316d85a5a2037135a083410892395a61be21a673a165f5386",
+    "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+    "harness": "d39b79193c307c8ceb5f9b1a5b10217d126f079d15a5f73bb2e38e1b1423a1b8",
+    "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+  },
+  "runs": [
+    {
+      "condition": "stompy",
+      "repeat": 1,
+      "outcome": "INVALID",
+      "score": null,
+      "cost_usd": null,
+      "reason": "ValueError: Provider authentication missing"
+    }
+  ],
+  "paired_deltas": [],
+  "nomemory_saturates": null,
+  "known_agent_cost_usd": 0,
+  "agent_cost_complete": false,
+  "cost_limitation": "Missing terminal costs remain unknown. Stompy-side embedding/worker costs are not metered by this spike.",
+  "comparison_limitation": "n=2 raw matched-repeat deltas only; no CIs or causal claim. Historical comparisons confound provider/model drift.",
+  "reset_limitation": "Full logical fixture compared; archived contexts and parked tickets remain in product history.",
+  "grader_limitation": "Tests exercise REST runtime contract and real resolver decisions with controlled storage/tool seams; existing lifecycle SQL is not revalidated.",
+  "runtime_image": "sha256:b35c529e57ca2b660adb3852a939541ad8b2e56b12c05186c58a782fdbd68607",
+  "retry_limit": 0,
+  "reserved_agent_budget_usd": 18
+}

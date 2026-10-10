@@ -7,3 +7,7 @@ dementia-snapshot/
 .env
 .env.*
 .claude/settings.local.json
+
+__pycache__/
+*.pyc
+.pytest_cache/
