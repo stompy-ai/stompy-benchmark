@@ -10,6 +10,7 @@ from pathlib import Path
 from spike.fixture import assert_fixture, fixture_lock, inventory, reset
 from spike.grader import grade
 from spike.mcp import MCP, server_build
+from spike.readiness import wait_ready
 from spike.report import build_report, write_report
 from spike.runner import run_cell
 from spike.snapshot import snapshot
@@ -87,6 +88,7 @@ def run(args) -> int:
                         raise ValueError("server build drift before cell")
                     receipt = reset(client, manifest, cell / "fixture")
                     snapshot(Path(args.backend), cell / "work")
+                    wait_ready(client, cell / "ready-before-launch.json")
                     assert_fixture(manifest, inventory(client))
                     memory = (
                         "Use only the injected stompy MCP server, project stompy_benchmark. Discover and recall this project's working rules and release-gate rules before acting. Treat the canonical fixture as read-only."
@@ -130,6 +132,7 @@ def run(args) -> int:
                             outcome="TASK_FAIL",
                             reason="task requires delegation; lead worked alone",
                         )
+                    wait_ready(client, cell / "ready-after-cell.json")
                     post_fixture = inventory(client)
                     (cell / "post-fixture.json").write_text(
                         json.dumps(post_fixture, indent=2) + "\n"

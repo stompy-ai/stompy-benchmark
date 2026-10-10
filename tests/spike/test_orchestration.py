@@ -18,6 +18,7 @@ def setup(monkeypatch, tmp_path):
         "MCP",
         lambda: SimpleNamespace(preflight=lambda: {"refusal": "INVALID_PROJECT"}),
     )
+    monkeypatch.setattr(harness, "wait_ready", lambda *a: {"ready": True})
     monkeypatch.setattr(harness, "snapshot", lambda *a: None)
     monkeypatch.setattr(harness, "reset", lambda *a: {"matched": True})
     monkeypatch.setattr(
@@ -136,3 +137,19 @@ def test_no_teammate_is_task_fail_with_a_complete_matrix(monkeypatch, tmp_path):
     report = json.loads((tmp_path / "test/report.json").read_text())
     assert report["matrix_valid"] and len(report["runs"]) == 4
     assert all(r["outcome"] == "TASK_FAIL" and r["score"] == 5 for r in report["runs"])
+
+
+def test_worker_readiness_refusal_prevents_paid_launch(monkeypatch, tmp_path):
+    args = setup(monkeypatch, tmp_path)
+
+    def refuse(*args):
+        raise ValueError("fixture has failed or unknown worker jobs")
+
+    monkeypatch.setattr(harness, "wait_ready", refuse)
+    launched = []
+    monkeypatch.setattr(harness, "run_cell", lambda *a, **kw: launched.append(True))
+    assert harness.run(args) == 1
+    assert launched == []
+    report = json.loads((tmp_path / "test/report.json").read_text())
+    assert report["runs"][0]["score"] is None
+    assert "worker jobs" in report["runs"][0]["reason"]

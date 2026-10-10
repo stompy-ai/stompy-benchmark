@@ -11,6 +11,8 @@ import json
 from contextlib import contextmanager
 from pathlib import Path
 
+from spike.readiness import wait_ready
+
 CONTEXT_FIELDS = ("label", "version", "content", "priority", "lifecycle")
 TICKET_FIELDS = ("title", "description", "status", "type", "priority")
 QUERIES = {
@@ -78,6 +80,7 @@ def assert_fixture(expected: dict, actual: dict):
 
 def reset(client, manifest: dict, evidence: Path) -> dict:
     evidence.mkdir(parents=True, exist_ok=False)
+    wait_ready(client, evidence / "ready-before-reset.json")
     before = inventory(client)
     (evidence / "before.json").write_text(json.dumps(before, indent=2) + "\n")
     wanted = {c["label"]: c for c in manifest["contexts"]}
@@ -216,13 +219,13 @@ def reset(client, manifest: dict, evidence: Path) -> dict:
     # No scoped context-unlink tool exists. Raw db_execute is admin-only,
     # including for admin-owned project keys. Archive/replay each offending
     # source once through the native door; its delete path purges owned edges.
-    # If async inference recreates an edge, the final full diff still fails.
-    unexpected = [
-        edge
-        for edge in inventory(client)["links"]
-        if edge not in canonical(manifest)["links"]
-    ]
-    for label in sorted({edge["source_label"] for edge in unexpected}):
+    # Missing committed derived edges also need source replay; the worker gate
+    # waits for extraction before the final diff. Never silently adopt its output.
+    current_edges = inventory(client)["links"]
+    expected_edges = canonical(manifest)["links"]
+    changed_edges = [edge for edge in current_edges if edge not in expected_edges]
+    changed_edges += [edge for edge in expected_edges if edge not in current_edges]
+    for label in sorted({edge["source_label"] for edge in changed_edges}):
         if label not in wanted:
             raise ValueError("orphan graph edge cannot be reset by the project key")
         client.call(
@@ -257,6 +260,7 @@ def reset(client, manifest: dict, evidence: Path) -> dict:
             {k: context[k] for k in CONTEXT_FIELDS}
         ]:
             raise ValueError("graph source replay failed full read-back")
+    wait_ready(client, evidence / "ready-after-replay.json")
     after = inventory(client)
     (evidence / "read-back.json").write_text(json.dumps(after, indent=2) + "\n")
     (evidence / "expected.json").write_text(

@@ -4,7 +4,14 @@ import json
 import subprocess
 from pathlib import Path
 
+from spike.compatibility import CLI_VERSION
+
 root = Path(__file__).resolve().parent
+if (
+    f"@anthropic-ai/claude-code@{CLI_VERSION} "
+    not in (root / "Dockerfile.agent").read_text()
+):
+    raise SystemExit("CLI/API compatibility pin drift; revalidate the pair")
 for image, digest in json.loads((root / "images.json").read_text()).items():
     actual = subprocess.check_output(
         ["docker", "image", "inspect", image, "--format", "{{.Id}}"], text=True

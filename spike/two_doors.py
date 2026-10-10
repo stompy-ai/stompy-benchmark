@@ -31,6 +31,8 @@ def walk(backend, reset_run, output):
     ).returncode:
         raise ValueError("staging does not yet prove it contains #1277")
     client = MCP()
+    # Project-key guard deliberately excludes the profile route. A future policy
+    # change needs an explicit probe update, not a silent identity assumption.
     identity_code, identity = rest(client, "/api/v1/auth/me")
     rest_code, contexts = rest(client, "/api/v1/projects/stompy_benchmark/contexts")
     foreign_code, _ = rest(client, "/api/v1/projects/stompy/contexts")

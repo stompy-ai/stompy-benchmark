@@ -8,6 +8,7 @@ from pathlib import Path
 
 from spike.fixture import assert_fixture, fixture_lock, inventory, reset
 from spike.mcp import MCP, server_build
+from spike.readiness import wait_ready
 from spike.run import ROOT, TASK, hash_files
 from spike.runner import run_cell
 
@@ -43,6 +44,7 @@ def smoke(output):
             receipt = reset(client, manifest, output / "fixture")
             work = output / "work"
             work.mkdir()
+            wait_ready(client, output / "ready-before-launch.json")
             assert_fixture(manifest, inventory(client))
             image = subprocess.check_output(
                 [
@@ -67,6 +69,7 @@ def smoke(output):
             row["isolation_proven"] = row["outcome"] == "OK" and isolation(row)
             row["preflight"] = preflight
             row["fixture"] = receipt
+            wait_ready(client, output / "ready-after-cell.json")
             post = inventory(client)
             (output / "post-fixture.json").write_text(json.dumps(post, indent=2) + "\n")
             assert_fixture(manifest, post)

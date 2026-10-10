@@ -38,8 +38,8 @@ rejects premium/server-tool requests, and retains the reservation on unknown
 billing. The CLI's own budget is a second limit. Its 240-second API timeout exceeds
 the gateway's 180-second upstream timeout; streaming responses are buffered. A killed stream's cost remains
 unknown even when its conservative reservation is known. The separate Docker
-control uses a dummy stdin key and makes zero upstream calls. For the pinned
-CLI/API pair, unsupported adaptive-thinking display values become `omitted`;
+control uses a dummy stdin key and makes zero upstream calls. For the compatibility.py-pinned
+CLI 2.1.296 / Anthropic API 2023-06-01 pair, unsupported adaptive-thinking display values become `omitted`;
 server `context_management` is removed and the full supplied history is counted
 and sent. Fixture MCP traffic is paced below existing fallback limits; refused
 calls are never silently retried.
@@ -73,7 +73,12 @@ Reset archives non-fixture context versions, parks extra tickets, replays the
 manifest and compares full canonical content/version/links and ticket body/status.
 A differing graph source gets one native archive/replay attempt. Orphan edges or
 any remaining diff invalidate the run. Read-back is repeated immediately before
-launch and after the cell; async inference drift must not be ignored. Product
+launch and after the cell; async inference drift must not be ignored. The project_jobs
+gate drains before reset, after replay, before launch and after each cell, requiring
+two ready observations five seconds apart (600-second bound). Delayed jobs count;
+failed/dead-letter/unknown states, malformed replies and scope mismatches invalidate
+the run. This gate requires STOMPY-2711 deployed and does not replace the full diff
+or protect against external writers. Product
 archive/history storage remains accessible: this is the explicitly requested
 logical park/archive reset, not physical erasure or byte-identical DB restoration.
 
@@ -122,7 +127,12 @@ accepting a killed process and accepting an operator MCP connector each produce
 exit **exactly 1**, the named regression failure, and surviving success controls.
 The process-kill orchestration test really SIGKILLs a synthetic child and verifies
 an INVALID/null-score row and nonzero orchestrator result. That is not evidence
-that a paid Sonnet cell or its teammates completed; those live proofs remain open.
+that a paid Sonnet cell or its teammates completed. Separate live evidence in
+results/spike-2699-live-controls proves the lead/teammate histogram axis and paid
+SIGKILL handling: smoke-f made four accepted requests, CLI cost $0.28939515, gateway
+upper bound $0.494433; the killed cell made one accepted request, gateway upper
+bound $0.063720, terminal cost unknown. All comparison rows remain INVALID pending
+fixture stability; these controls are not an n=2 result.
 
 No skills are installed or changed. Skills impact: task agents now get isolated
 configuration and an explicit scoped-memory instruction. The historical fixture

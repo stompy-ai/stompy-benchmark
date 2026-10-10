@@ -13,8 +13,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 if __package__:
+    from .compatibility import API_VERSION
     from .gateway_budget import MODEL, Budget
 else:
+    from compatibility import API_VERSION
     from gateway_budget import MODEL, Budget
 
 UPSTREAM = "https://api.anthropic.com"
@@ -50,7 +52,7 @@ def record_error(error):
 def upstream(path, payload):
     headers = {
         "x-api-key": KEY,
-        "anthropic-version": "2023-06-01",
+        "anthropic-version": API_VERSION,
         "content-type": "application/json",
     }
     req = urllib.request.Request(
