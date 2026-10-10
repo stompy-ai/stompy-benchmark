@@ -7,6 +7,7 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
+from spike.gateway_budget import MODEL, RATES
 from spike.spend import reserve, settle
 
 PYTHON_IMAGE = "sha256:3ad37ccd1797321f4bda14f483941a4f7a2b9eca454847b22652e59f5baab8c9"
@@ -27,7 +28,9 @@ def gateway(output: Path, budget: float):
         str(root),
         str(evidence.resolve()),
         str(budget),
-        "1000000",
+        # Cached history counts on every request. Bound tokens by the cheapest
+        # conservative rate; dollar reservations remain the tighter spend gate.
+        str(int(budget * 1_000_000) // min(RATES[MODEL].values())),
         PYTHON_IMAGE,
     ]
     identity = str(output.resolve())

@@ -143,3 +143,14 @@ below 500 lines; no existing file-size baseline is raised. Claude reviews/merges
 Markus alone decides tags. STOMPY-2704 staging two-door evidence is retained
 in `results/spike-2699-live-controls/two-doors.json`. The project-key profile
 route is intentionally forbidden; code-derived principal fields are labeled.
+
+Live matrix attempt `matrix-20261010-a` was INVALID (1/4 rows): the original
+1M cumulative-token cap rejected repeated cached history after 16 requests,
+well before the $4.50 dollar ceiling. Its terminal cost was $0.61942995 and
+gateway upper bound $1.377868; all evidence is retained. The token ceiling is
+now derived from the cell dollar limit divided by the cheapest conservative
+rate ($1/M), giving 4.5M tokens for a $4.50 cell. Worst-case dollar reservation,
+unknown-billing refusal, and the shared $20 ledger remain enforced. This is
+a versioned harness correction, not an automatic retry or discarded attempt.
+`python -m spike.red_token_budget` restores the old limit and asserts the
+named failing test at exit exactly 1 with the dollar-refusal control GREEN.

@@ -1,0 +1,42 @@
+{
+  "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+  "server_after": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+  "fix_commit": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+  "rest_status": 200,
+  "cache_control": "no-store",
+  "rest": {
+    "project": "stompy_benchmark",
+    "scope": "team_main",
+    "counts": {
+      "pending": 0,
+      "processing": 0,
+      "failed": 0,
+      "dead_letter": 0,
+      "completed": 0,
+      "unknown": 0
+    },
+    "ready": true,
+    "observed_at": "2026-10-10T19:34:53.141508+00:00",
+    "limitation": "Point-in-time active-team-member counts; external writes or membership changes can invalidate readiness. Queue database identity remains STOMPY-2731. No routed-tenant readiness claim."
+  },
+  "mcp": {
+    "project": "stompy_benchmark",
+    "scope": "team_main",
+    "counts": {
+      "pending": 0,
+      "processing": 0,
+      "failed": 0,
+      "dead_letter": 0,
+      "completed": 0,
+      "unknown": 0
+    },
+    "ready": true,
+    "observed_at": "2026-10-10T19:34:54.991832+00:00",
+    "limitation": "Point-in-time active-team-member counts; external writes or membership changes can invalidate readiness. Queue database identity remains STOMPY-2731. No routed-tenant readiness claim."
+  },
+  "foreign_rest_status": 404,
+  "foreign_mcp_code": "PROJECT_NOT_FOUND",
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "limitation": "This proves nothing about routed tenants. Observations are not a write lock.",
+  "passed": true
+}

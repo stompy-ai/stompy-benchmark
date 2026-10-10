@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "paid_requests": 0,
+  "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+  "negative_preflight": {
+    "own_schema": "stompy_benchmark",
+    "other_project": "stompy",
+    "refusal": "INVALID_PROJECT"
+  },
+  "reset": {
+    "matched": true,
+    "contexts": 2,
+    "links": 1,
+    "tickets": 1,
+    "parked_or_archived_tickets": 0,
+    "sha256": "0f10d861f40120f37e4486413abbd6b3671843bf023bbc6fd19adb6f49d38de0",
+    "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+  },
+  "ready_after_reset": {
+    "project": "stompy_benchmark",
+    "scope": "team_main",
+    "counts": {
+      "pending": 0,
+      "processing": 0,
+      "failed": 0,
+      "dead_letter": 0,
+      "completed": 0,
+      "unknown": 0
+    },
+    "ready": true,
+    "observed_at": "2026-10-10T19:36:01.802069+00:00",
+    "limitation": "Point-in-time active-team-member counts; external writes or membership changes can invalidate readiness. Queue database identity remains STOMPY-2731. No routed-tenant readiness claim."
+  },
+  "server_after": "7389ece91bd6911c0b6030c2f47a991c494ebcd4"
+}

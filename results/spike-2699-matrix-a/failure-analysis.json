@@ -1,0 +1,11 @@
+{
+  "cause": "gateway cumulative token ceiling exhausted before dollar budget",
+  "api_error_status": 429,
+  "terminal_reason": "api_error",
+  "original_token_ceiling": 1000000,
+  "settled_tokens": 927675,
+  "accepted_requests": 16,
+  "orchestrator_exit_code": 1,
+  "preserved_invalid": true,
+  "automatic_retry": false
+}
