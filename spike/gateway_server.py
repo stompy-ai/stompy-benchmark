@@ -29,6 +29,24 @@ def audit():
     temporary.replace(AUDIT)
 
 
+def record_error(error):
+    diagnostic = {
+        "error_type": type(error).__name__,
+        "status": getattr(error, "code", None),
+    }
+    if isinstance(error, urllib.error.HTTPError):
+        try:
+            detail = json.loads(error.read()).get("error", {})
+            diagnostic["provider_error_type"] = detail.get("type")
+            message = str(detail.get("message", ""))
+            diagnostic["message"] = message.replace(KEY or "__absent__", "[REDACTED]")[
+                :500
+            ]
+        except Exception:
+            pass
+    AUDIT.with_name("error.json").write_text(json.dumps(diagnostic))
+
+
 def upstream(path, payload):
     headers = {
         "x-api-key": KEY,
@@ -98,6 +116,18 @@ class Handler(BaseHTTPRequestHandler):
                 t.get("type", "custom") != "custom" for t in body.get("tools", [])
             ):
                 raise ValueError("premium/server tools are disabled")
+            # This pinned API does not accept the CLI's server context-editing
+            # extension. Send/count the full supplied history instead.
+            body.pop("context_management", None)
+            thinking = body.get("thinking", {})
+            if thinking.get("type") == "adaptive" and thinking.get("display") not in {
+                None,
+                "summarized",
+                "omitted",
+            }:
+                # The pinned CLI's presentation enum predates this API enum.
+                # Omit thinking display; retain adaptive reasoning itself.
+                body["thinking"] = {**thinking, "display": "omitted"}
             with BUDGET.lock:
                 if path.endswith("count_tokens"):
                     with upstream(path, body) as response:
@@ -151,6 +181,7 @@ class Handler(BaseHTTPRequestHandler):
                         422,
                         429,
                     }:
+                        record_error(error)
                         BUDGET.charged -= reserved
                         BUDGET.tokens -= tokens
                         BUDGET.unknown = False
@@ -184,7 +215,8 @@ class Handler(BaseHTTPRequestHandler):
                     },
                 },
             )
-        except Exception:
+        except Exception as error:
+            record_error(error)
             self.send(
                 502,
                 {

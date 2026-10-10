@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 
@@ -17,6 +18,7 @@ class MCP:
             raise ValueError("unexpected fixture project")
         self.key = os.environ["STOMPY_BENCHMARK_API_KEY"]
         self.sequence = 0
+        self.next_request = 0.0
         self.headers = {
             "Authorization": "Bearer " + self.key,
             "Accept": "application/json, text/event-stream",
@@ -32,6 +34,9 @@ class MCP:
         )
 
     def rpc(self, method, params):
+        # Respect even the beta fallback (30/minute); never retry a refused call.
+        time.sleep(max(0.0, self.next_request - time.monotonic()))
+        self.next_request = time.monotonic() + 2.1
         self.sequence += 1
         body = json.dumps(
             {"jsonrpc": "2.0", "id": self.sequence, "method": method, "params": params}
@@ -47,7 +52,10 @@ class MCP:
                     self.headers["Mcp-Session-Id"] = session
         except urllib.error.HTTPError as error:
             tool = params.get("name", method)
-            raise RuntimeError(f"MCP {tool} HTTP {error.code}") from None
+            retry_after = error.headers.get("Retry-After", "unknown")
+            raise RuntimeError(
+                f"MCP {tool} HTTP {error.code}; retry_after={retry_after}"
+            ) from None
         except Exception as error:
             raise RuntimeError(
                 f"MCP transport failed: {type(error).__name__}"

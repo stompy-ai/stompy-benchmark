@@ -9,7 +9,7 @@ from pathlib import Path
 
 from spike.mcp import MCP, STAGING, server_build
 
-FIX = "35dee5c3606ae030c3c6e864f0ab5408043f4096"
+FIX = "e6524c64b701de1fbe2699a3b314fa0e78beccd8"
 
 
 def rest(client, path):
@@ -56,18 +56,20 @@ def walk(backend, reset_run, output):
         "database": database,
         "negative_preflight": negative,
         "fixture_identity": "project key, team project on MAIN, owner 51/admin",
-        "principal_note": "Owner tier is admin; project-key principal is clamped to beta. REST user_id is the key label, not the internal owner ID.",
+        "principal_note": "auth/me is intentionally forbidden to project keys. Owner 51 is observed in MCP members; auth_type=project_api_key and beta tier clamp are derived from the deployed server_hosted.py authentication path, not exposed by auth/me. The configured key label is benchmark-harness; REST user_id would be that label plus (api key).",
+        "identity_evidence": "MCP membership and scoped-door behavior observed; principal fields code-derived",
     }
     evidence["passed"] = (
         before == after
         and rest_code == 200
-        and identity_code == 200
+        and identity_code == 403
         and foreign_code == 404
-        and identity.get("auth_type") == "project_api_key"
-        and identity.get("tier") == "beta"
-        and bool(identity.get("user_id"))
         and project.get("is_shared") is True
         and project.get("my_role") == "owner"
+        and any(
+            str(m.get("user_id")) == "51" and m.get("role") == "owner"
+            for m in project.get("members", [])
+        )
         and database[0]["schema"] == "stompy_benchmark"
     )
     output.parent.mkdir(parents=True, exist_ok=True)

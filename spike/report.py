@@ -71,7 +71,7 @@ def build_report(
         "cost_limitation": "Missing terminal costs remain unknown. Stompy-side embedding/worker costs are not metered by this spike.",
         "comparison_limitation": "n=2 raw matched-repeat deltas only; no CIs or causal claim. Historical comparisons confound provider/model drift.",
         "reset_limitation": "Full logical fixture compared; archived contexts and parked tickets remain in product history.",
-        "grader_limitation": "Tests exercise REST runtime contract and real resolver decisions with controlled storage/tool seams; existing lifecycle SQL is not revalidated.",
+        "grader_limitation": "Tests exercise REST runtime contract and resolver decisions with controlled private storage/tool seams. The three critical authorization checks are path-coupled to resolver internals. The real MCP callable and lifecycle SQL are not executed by these oracles; both-door test quality is not scored. Optional review_after_days/note bounds are outside this spike oracle.",
     }
 
 

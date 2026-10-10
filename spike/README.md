@@ -38,7 +38,11 @@ rejects premium/server-tool requests, and retains the reservation on unknown
 billing. The CLI's own budget is a second limit. Its 240-second API timeout exceeds
 the gateway's 180-second upstream timeout; streaming responses are buffered. A killed stream's cost remains
 unknown even when its conservative reservation is known. The separate Docker
-control uses a dummy stdin key and makes zero upstream calls.
+control uses a dummy stdin key and makes zero upstream calls. For the pinned
+CLI/API pair, unsupported adaptive-thinking display values become `omitted`;
+server `context_management` is removed and the full supplied history is counted
+and sent. Fixture MCP traffic is paced below existing fallback limits; refused
+calls are never silently retried.
 
 Governance decision: this harness lives in the separate `stompy-benchmark`
 repository, outside dementia-production's scanned source tree. No backend
@@ -97,7 +101,11 @@ container outside the agent environment. Its submission mount is read-only;
 hidden tests are mounted only into the grader. Three critical authorization
 checks are separate from five points. These are transport/resolver contract
 oracles using a controlled existing-MCP-tool seam, not a revalidation of the
-existing lifecycle database implementation. RED on the untouched snapshot and
+existing lifecycle database implementation. The three critical checks patch private
+resolver storage seams and are path-coupled; alternative correct authorization
+implementations may not fit this oracle. Real MCP callable execution, agent-authored
+both-door test quality, and optional review_after_days/note bounds are not scored.
+RED on the untouched snapshot and
 GREEN on the reference are retained in `results/spike-2699-preflight/`.
 
 ## Verification
@@ -120,5 +128,6 @@ No skills are installed or changed. Skills impact: task agents now get isolated
 configuration and an explicit scoped-memory instruction. The historical fixture
 is task input, not a change to operator skills. New code is extracted into modules
 below 500 lines; no existing file-size baseline is raised. Claude reviews/merges;
-Markus alone decides tags. STOMPY-2704's fixed staging two-door walk awaits its
-reviewed deployment, independently of this spike's MCP fixture path.
+Markus alone decides tags. STOMPY-2704 staging two-door evidence is retained
+in `results/spike-2699-live-controls/two-doors.json`. The project-key profile
+route is intentionally forbidden; code-derived principal fields are labeled.

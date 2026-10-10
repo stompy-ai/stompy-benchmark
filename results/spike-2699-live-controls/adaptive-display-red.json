@@ -1,0 +1,7 @@
+{
+  "red_exit_code": 1,
+  "failed_test": "test_cli_adaptive_display_is_normalized_before_counting",
+  "green_spike_tests": 43,
+  "live_count_tokens_status": 200,
+  "live_count_tokens_input": 8
+}

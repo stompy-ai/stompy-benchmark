@@ -1,0 +1,9 @@
+{
+  "charged_upper_bound_usd": 0.494433,
+  "ceiling_usd": 1.25,
+  "tokens": 138518,
+  "token_ceiling": 1000000,
+  "requests": 4,
+  "accepted_requests": 4,
+  "billing_unknown": false
+}

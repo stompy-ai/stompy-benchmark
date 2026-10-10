@@ -1,0 +1,68 @@
+{
+  "kind": "isolation-smoke",
+  "reserved_budget_usd": 1.25,
+  "server_before": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "server_after": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "prompt_sha256": "a8723197c11ea7575b9199e206d602610dd53c0bb65bb39c9c5993f944fcd3f8",
+  "fixture_hash": "0a5ee10361a6a6c316d85a5a2037135a083410892395a61be21a673a165f5386",
+  "harness_hash": "2108982586029a029e22d5615ecbac98d99370e48fe9c5ad55583439da3c7041",
+  "run": {
+    "condition": "stompy",
+    "model": "claude-sonnet-4-6",
+    "runtime_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+    "wall_seconds": 3.89,
+    "exit_code": 1,
+    "deliberately_killed": false,
+    "outcome": "INVALID",
+    "score": null,
+    "cost_usd": 0,
+    "reason": "ValueError: lead and every teammate must exercise the scoped server",
+    "tool_histograms": {
+      "lead": {}
+    },
+    "delegated_calls": 0,
+    "teammate_transcripts": [],
+    "delegate_trace_map": {},
+    "launch_env_keys": [
+      "ANTHROPIC_AUTH_TOKEN",
+      "ANTHROPIC_BASE_URL",
+      "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+      "API_TIMEOUT_MS",
+      "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+      "CLAUDE_CODE_SUBAGENT_MODEL",
+      "CLAUDE_CONFIG_DIR",
+      "ENABLE_TOOL_SEARCH",
+      "HOME",
+      "LANG",
+      "PATH",
+      "PYTHONDONTWRITEBYTECODE"
+    ],
+    "gateway": {
+      "charged_upper_bound_usd": 0.0,
+      "ceiling_usd": 1.25,
+      "tokens": 0,
+      "token_ceiling": 1000000,
+      "requests": 2,
+      "accepted_requests": 0,
+      "billing_unknown": false
+    },
+    "paid_request_accepted": false,
+    "isolation_proven": false,
+    "preflight": {
+      "own_schema": "stompy_benchmark",
+      "other_project": "stompy",
+      "refusal": "INVALID_PROJECT"
+    },
+    "fixture": {
+      "matched": true,
+      "contexts": 2,
+      "links": 0,
+      "tickets": 1,
+      "parked_or_archived_tickets": 0,
+      "sha256": "4dafd282eb47cc43431f4cd8996799719244a810f85b964fbe699da714fbc6f1",
+      "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+    }
+  }
+}

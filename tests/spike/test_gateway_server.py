@@ -127,3 +127,28 @@ def test_model_allowlist_has_matching_rate_table():
 
     assert set(RATES) == {server.MODEL}
     assert Budget(1, 1000).rates == RATES[server.MODEL]
+
+
+def test_cli_adaptive_display_is_normalized_before_counting(proxy):
+    post, calls, _ = proxy
+    body = {
+        "model": server.MODEL,
+        "messages": [],
+        "max_tokens": 1,
+        "thinking": {"type": "adaptive", "display": "none"},
+    }
+    assert post(body)[0] == 200
+    for _, payload in calls:
+        assert payload["thinking"] == {"type": "adaptive", "display": "omitted"}
+
+
+def test_unsupported_server_context_editing_is_removed(proxy):
+    post, calls, _ = proxy
+    body = {
+        "model": server.MODEL,
+        "messages": [],
+        "max_tokens": 1,
+        "context_management": {"edits": [{"type": "clear_thinking_20251015"}]},
+    }
+    assert post(body)[0] == 200
+    assert all("context_management" not in payload for _, payload in calls)
