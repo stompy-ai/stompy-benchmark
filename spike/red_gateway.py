@@ -12,8 +12,8 @@ def main():
     cases = [
         (
             "ignore_prior_spend",
-            "remaining = self.ceiling - self.charged - input_tokens * 6",
-            "remaining = self.ceiling - input_tokens * 6",
+            'self.ceiling - self.charged - input_tokens * self.rates["cache_write"]',
+            'self.ceiling - input_tokens * self.rates["cache_write"]',
             "test_reservation_prevents_concurrent_overspend",
         ),
         (

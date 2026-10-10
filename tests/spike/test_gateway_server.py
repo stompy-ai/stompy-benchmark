@@ -101,3 +101,29 @@ def test_upstream_rebuilds_headers_with_provider_key_only(monkeypatch):
     headers = dict(requests[0].header_items())
     assert headers["X-api-key"] == "provider-fixture-value"
     assert "Authorization" not in headers
+
+
+@pytest.mark.parametrize("status,unknown", [(400, False), (429, False), (529, True)])
+def test_preacceptance_refusal_billing(proxy, monkeypatch, status, unknown):
+    post, calls, tmp = proxy
+
+    def refused(path, payload):
+        if path.endswith("count_tokens"):
+            return io.BytesIO(b'{"input_tokens":10}')
+        raise urllib.error.HTTPError("private", status, "sensitive", {}, None)
+
+    monkeypatch.setattr(server, "upstream", refused)
+    code, body = post({"model": server.MODEL, "messages": [], "max_tokens": 100})
+    evidence = json.loads((tmp / "gateway.json").read_text())
+    assert evidence["billing_unknown"] is unknown
+    assert (evidence["charged_upper_bound_usd"] > 0) is unknown
+    assert evidence["accepted_requests"] == 0
+    assert code == (502 if unknown else status)
+    assert "sensitive" not in json.dumps(body)
+
+
+def test_model_allowlist_has_matching_rate_table():
+    from spike.gateway_budget import RATES
+
+    assert set(RATES) == {server.MODEL}
+    assert Budget(1, 1000).rates == RATES[server.MODEL]

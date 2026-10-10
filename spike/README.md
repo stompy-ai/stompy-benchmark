@@ -35,7 +35,8 @@ The grader and publisher get no provider credential.
 The gateway permits only pinned Sonnet message/count-token requests. It
 serializes reservations before billable requests, caps tokens and dollars,
 rejects premium/server-tool requests, and retains the reservation on unknown
-billing. The CLI's own budget is a second limit. A killed stream's cost remains
+billing. The CLI's own budget is a second limit. Its 240-second API timeout exceeds
+the gateway's 180-second upstream timeout; streaming responses are buffered. A killed stream's cost remains
 unknown even when its conservative reservation is known. The separate Docker
 control uses a dummy stdin key and makes zero upstream calls.
 
@@ -46,13 +47,18 @@ the committed historical engineering fixture may reach the provider; never
 customer corpora. Publishing a CI secret remains Markus's step.
 
 ```sh
+python -m spike.smoke --output runs/spike/unique-isolation-smoke
 python -m spike.run --gen unique-name --backend /path/to/dementia-production
 python -m spike.run --gen unique-kill-control --backend /path/to/dementia-production --kill-control
 ```
 
 Normal schedule: Sonnet `stompy/1, nomemory/1, nomemory/2, stompy/2`; maximum
 $4.50 per cell, $18 reserved total, no automatic retries. The separate killed
-control reserves $0.25 and kills after ten seconds. Worker/embedding costs are
+control reserves $0.25 and kills after ten seconds once an upstream request
+has been accepted. The separate isolation smoke reserves $1.25. A shared locked
+ledger at `/private/tmp/stompy-2699-spend.json` caps all attempts together at $20;
+unknown attempts keep their reservation. Never delete it to regain budget.
+The planned smoke, kill and matrix ceilings total $19.50. Worker/embedding costs are
 not metered, and killed processes may lack a terminal billing total; reports
 preserve unknown costs. Do not describe the reserved amount as actual spend.
 Output generations are append-only under ignored `runs/spike/`.

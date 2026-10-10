@@ -7,7 +7,7 @@
     ]
   },
   "head": {
-    "passed": 34,
+    "passed": 42,
     "failure": [],
     "error": [
       "::longmemeval.tests.test_adapter"

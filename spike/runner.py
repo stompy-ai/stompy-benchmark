@@ -204,6 +204,7 @@ def _execute_cell(
             "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
             "PYTHONDONTWRITEBYTECODE",
             "ENABLE_TOOL_SEARCH",
+            "API_TIMEOUT_MS",
             "ANTHROPIC_BASE_URL",
             "ANTHROPIC_AUTH_TOKEN",
             "ANTHROPIC_DEFAULT_HAIKU_MODEL",

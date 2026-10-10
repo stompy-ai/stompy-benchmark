@@ -7,9 +7,13 @@ Disable premium/server tools and region/fast surcharges at the gateway boundary.
 
 from threading import Lock
 
+MODEL = "claude-sonnet-4-6"
+RATES = {MODEL: {"input": 3, "output": 15, "cache_write": 6, "cache_read": 1}}
+
 
 class Budget:
     def __init__(self, ceiling_usd, token_ceiling):
+        self.rates = RATES[MODEL]
         self.ceiling = int(ceiling_usd * 1_000_000)
         self.token_ceiling = token_ceiling
         self.charged = self.tokens = self.requests = 0
@@ -20,16 +24,20 @@ class Budget:
     def reserve(self, input_tokens, requested_output):
         if self.unknown:
             raise ValueError("previous request has unknown billing")
-        remaining = self.ceiling - self.charged - input_tokens * 6
+        remaining = (
+            self.ceiling - self.charged - input_tokens * self.rates["cache_write"]
+        )
         output = min(
             requested_output,
             4096,
-            remaining // 15,
+            remaining // self.rates["output"],
             self.token_ceiling - self.tokens - input_tokens,
         )
         if input_tokens < 0 or output < 1:
             raise ValueError("gateway budget exhausted")
-        amount = input_tokens * 6 + output * 15
+        amount = (
+            input_tokens * self.rates["cache_write"] + output * self.rates["output"]
+        )
         self.charged += amount
         self.tokens += input_tokens + output
         self.requests += 1
@@ -54,9 +62,12 @@ class Budget:
             self.unknown = True
             return
         # Round cached reads UP to $1/M rather than pretending precision.
-        cost = usage["input_tokens"] * 3 + usage["output_tokens"] * 15
-        cost += usage.get("cache_creation_input_tokens", 0) * 6
-        cost += usage.get("cache_read_input_tokens", 0)
+        cost = (
+            usage["input_tokens"] * self.rates["input"]
+            + usage["output_tokens"] * self.rates["output"]
+        )
+        cost += usage.get("cache_creation_input_tokens", 0) * self.rates["cache_write"]
+        cost += usage.get("cache_read_input_tokens", 0) * self.rates["cache_read"]
         if cost > reservation:
             self.unknown = True
             return

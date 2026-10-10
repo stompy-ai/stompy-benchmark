@@ -13,12 +13,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 if __package__:
-    from .gateway_budget import Budget
+    from .gateway_budget import MODEL, Budget
 else:
-    from gateway_budget import Budget
+    from gateway_budget import MODEL, Budget
 
 UPSTREAM = "https://api.anthropic.com"
-MODEL = "claude-sonnet-4-6"
 KEY = None
 BUDGET = None
 AUDIT = None
@@ -120,8 +119,10 @@ class Handler(BaseHTTPRequestHandler):
                 # stream never refunds itself or permits another request.
                 BUDGET.unknown = True
                 audit()
+                accepted = False
                 try:
                     with upstream(path, body) as response:
+                        accepted = True
                         BUDGET.accepted_requests += 1
                         audit()
                         raw = response.read()
@@ -138,6 +139,36 @@ class Handler(BaseHTTPRequestHandler):
                             else "application/json"
                         ),
                     )
+                except urllib.error.HTTPError as error:
+                    # Explicit client refusal before acceptance did no model work.
+                    # Server errors and any failure after acceptance stay unknown.
+                    if not accepted and error.code in {
+                        400,
+                        401,
+                        403,
+                        404,
+                        413,
+                        422,
+                        429,
+                    }:
+                        BUDGET.charged -= reserved
+                        BUDGET.tokens -= tokens
+                        BUDGET.unknown = False
+                        audit()
+                        self.send(
+                            error.code,
+                            {
+                                "type": "error",
+                                "error": {
+                                    "type": "invalid_request_error",
+                                    "message": "provider refused request before acceptance",
+                                },
+                            },
+                        )
+                        return
+                    BUDGET.unknown = True
+                    audit()
+                    raise
                 except Exception:
                     BUDGET.unknown = True
                     audit()

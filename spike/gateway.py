@@ -7,6 +7,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
+from spike.spend import reserve, settle
+
 PYTHON_IMAGE = "sha256:3ad37ccd1797321f4bda14f483941a4f7a2b9eca454847b22652e59f5baab8c9"
 
 
@@ -28,6 +30,8 @@ def gateway(output: Path, budget: float):
         "1000000",
         PYTHON_IMAGE,
     ]
+    identity = str(output.resolve())
+    reserve(identity, budget)
     # No credential enters this process or the grader/publisher environment.
     with (evidence / "startup.log").open("w") as log:
         process = subprocess.Popen(command, stdout=log, stderr=log)
@@ -63,6 +67,9 @@ def gateway(output: Path, budget: float):
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait()
+            ledger = evidence / "gateway.json"
+            if ledger.exists():
+                settle(identity, json.loads(ledger.read_text()))
 
 
 def evidence(output: Path):
