@@ -154,3 +154,12 @@ unknown-billing refusal, and the shared $20 ledger remain enforced. This is
 a versioned harness correction, not an automatic retry or discarded attempt.
 `python -m spike.red_token_budget` restores the old limit and asserts the
 named failing test at exit exactly 1 with the dollar-refusal control GREEN.
+
+Final recorded spike answer: [report](../results/spike-2699-answer/report.md).
+Both matrix attempts are INVALID at 1/4, with no nomemory score or paired delta.
+Matrix-b also encountered the dollar reservation gate and staging build drift.
+All-attempt gateway bounds are $6.115312; known terminal subtotal $2.65969785,
+with killed-run terminal and service costs still unknown. Remaining $13.884688
+cannot reserve another unchanged $18 matrix. Review the explicit envelope and
+deployment-window findings before further paid work. Budget-refusal retries
+and multiple invalidation reasons are tracked separately in STOMPY-2736.

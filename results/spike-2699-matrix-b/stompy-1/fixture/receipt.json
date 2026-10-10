@@ -1,0 +1,9 @@
+{
+  "matched": true,
+  "contexts": 2,
+  "links": 1,
+  "tickets": 1,
+  "parked_or_archived_tickets": 0,
+  "sha256": "0f10d861f40120f37e4486413abbd6b3671843bf023bbc6fd19adb6f49d38de0",
+  "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+}
