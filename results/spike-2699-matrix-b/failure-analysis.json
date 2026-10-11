@@ -1,0 +1,21 @@
+{
+  "independent_invalid_reasons": [
+    "local dollar reservation refused; terminal API error 429",
+    "staging server build changed during cell"
+  ],
+  "api_error_status": 429,
+  "terminal_reason": "api_error",
+  "cli_local_refusal_retries": 10,
+  "new_provider_acceptances_during_retries": 0,
+  "accepted_requests": 46,
+  "settled_tokens": 3158620,
+  "token_ceiling": 4500000,
+  "gateway_upper_bound_usd": 4.179291,
+  "cell_ceiling_usd": 4.5,
+  "orchestrator_exit_code": 1,
+  "terminal_cost_usd": 1.75087275,
+  "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+  "server_after": "84e18faada491cbf5bf8c3d4c03a62c964765109",
+  "followup": "STOMPY-2736",
+  "post_fixture_matched": true
+}

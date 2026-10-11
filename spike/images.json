@@ -1,0 +1,5 @@
+{
+  "stompy-2444-cienv2:latest": "sha256:b458acffeef6d5a6e10a1f7375e69d4d7c243697bff114b69f78f2e36e2b4772",
+  "node:22-bookworm": "sha256:b937e94e9d34b951780aeada17bebd8f979de53ea3cadba193e7dec85dc3be8f",
+  "python:3.11-slim-bookworm": "sha256:3ad37ccd1797321f4bda14f483941a4f7a2b9eca454847b22652e59f5baab8c9"
+}

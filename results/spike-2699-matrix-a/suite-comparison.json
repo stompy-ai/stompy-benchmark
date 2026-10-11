@@ -1,0 +1,17 @@
+{
+  "base": "4ec5ffb",
+  "base_ids": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  },
+  "head_ids": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  },
+  "identical": true,
+  "head_spike_tests_passed": 57
+}

@@ -1,0 +1,84 @@
+{
+  "mode": "shadow",
+  "outcome": "INCONCLUSIVE",
+  "matrix_valid": false,
+  "expected_runs": 4,
+  "observed_runs": 1,
+  "server_build_before": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "server_build_after": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "build_stable": true,
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "hashes": {
+    "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+    "fixture": "0a5ee10361a6a6c316d85a5a2037135a083410892395a61be21a673a165f5386",
+    "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+    "harness": "aadcc4d67385d21ece9c1ce29df2e6bd60b56ea3f5c1978e93ccb8f717041e65",
+    "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+  },
+  "runs": [
+    {
+      "condition": "stompy",
+      "repeat": 1,
+      "outcome": "INVALID",
+      "score": null,
+      "cost_usd": null,
+      "model": "claude-sonnet-4-6",
+      "runtime_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+      "wall_seconds": 11.56,
+      "exit_code": 137,
+      "deliberately_killed": true,
+      "reason": "missing terminal result",
+      "tool_histograms": {
+        "lead": {
+          "stompy": 2
+        }
+      },
+      "launch_env_keys": [
+        "ANTHROPIC_AUTH_TOKEN",
+        "ANTHROPIC_BASE_URL",
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+        "API_TIMEOUT_MS",
+        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+        "CLAUDE_CODE_SUBAGENT_MODEL",
+        "CLAUDE_CONFIG_DIR",
+        "ENABLE_TOOL_SEARCH",
+        "HOME",
+        "LANG",
+        "PATH",
+        "PYTHONDONTWRITEBYTECODE"
+      ],
+      "gateway": {
+        "charged_upper_bound_usd": 0.06372,
+        "ceiling_usd": 0.25,
+        "tokens": 39751,
+        "token_ceiling": 1000000,
+        "requests": 1,
+        "accepted_requests": 1,
+        "billing_unknown": false
+      },
+      "paid_request_accepted": true,
+      "fixture": {
+        "matched": true,
+        "contexts": 2,
+        "links": 0,
+        "tickets": 1,
+        "parked_or_archived_tickets": 0,
+        "sha256": "4dafd282eb47cc43431f4cd8996799719244a810f85b964fbe699da714fbc6f1",
+        "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+      },
+      "rendered_prompt_sha256": "e30c0e5ee5fe55bc65b37674a43afdc9d69d73ccbf51ad6e7f6d2763c57932e7"
+    }
+  ],
+  "paired_deltas": [],
+  "nomemory_saturates": null,
+  "known_agent_cost_usd": 0,
+  "agent_cost_complete": false,
+  "cost_limitation": "Missing terminal costs remain unknown. Stompy-side embedding/worker costs are not metered by this spike.",
+  "comparison_limitation": "n=2 raw matched-repeat deltas only; no CIs or causal claim. Historical comparisons confound provider/model drift.",
+  "reset_limitation": "Full logical fixture compared; archived contexts and parked tickets remain in product history.",
+  "grader_limitation": "Tests exercise REST runtime contract and resolver decisions with controlled private storage/tool seams. The three critical authorization checks are path-coupled to resolver internals. The real MCP callable and lifecycle SQL are not executed by these oracles; both-door test quality is not scored. Optional review_after_days/note bounds are outside this spike oracle.",
+  "runtime_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+  "retry_limit": 0,
+  "reserved_agent_budget_usd": 0.25
+}

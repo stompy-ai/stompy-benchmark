@@ -1,0 +1,97 @@
+{
+  "outcome": "INCONCLUSIVE / NOT RELEASE-READY",
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "six": [
+    {
+      "slice": "1. Reset and read-back",
+      "result": "HELD in the tested MAIN-team scope",
+      "evidence": "2 contexts with versions, 1 committed inferred link, 1 ticket with status/body; exact reset and independent delayed full read-back, readiness at four gates, local lock. Both matrix post-cell fixtures matched. Canonical SHA 0f10d861f40120f37e4486413abbd6b3671843bf023bbc6fd19adb6f49d38de0. Point-in-time active-member counts; durable queue identity remains STOMPY-2731; no distributed/deployment lock."
+    },
+    {
+      "slice": "2. Isolation",
+      "result": "HELD in the live smoke",
+      "evidence": "Lead stompy:1 and one identified teammate stompy:1, no operator MCP servers; isolated HOME/config and allowlisted env. Negative project preflight refused. Matrix-b also retained lead stompy:2 plus one identified teammate with zero MCP calls. No completed comparison row."
+    },
+    {
+      "slice": "3. Fail-closed",
+      "result": "HELD",
+      "evidence": "Paid kill accepted 1 request, then SIGKILL137; INVALID with null score and unknown terminal cost; orchestrator exit1, 1/4 cardinality. Both real matrix attempts also stopped INVALID/exit1 at 1/4, never a zero-score row. HTTP retries are distinct from zero automatic cell retries."
+    },
+    {
+      "slice": "4. Frozen task",
+      "result": "HELD as a task artifact; difficulty uncalibrated",
+      "evidence": "One REST-for-MCP lifecycle task at c40570b266df628ed1f5a9260ba77096d8bfe71a, historical sanitized fixture including a pre-agent observed derived edge. No completed solution score; nomemory never launched."
+    },
+    {
+      "slice": "5. Trusted grader",
+      "result": "HELD for the disclosed eight contract oracles",
+      "evidence": "Pinned networkless grader outside agent; untouched snapshot 8 named failures at exit1, reference 8 passes at exit0, independently verified by Fable. Three critical checks separate from five points. Private-resolver path coupling; real MCP callable and SQL unexecuted; optional bounds and agent test quality unscored. No matrix submission graded because both attempts were INVALID."
+    },
+    {
+      "slice": "6. Report and comparison",
+      "result": "Report generation HELD; n=2 comparison NOT HELD",
+      "evidence": "Generated reports preserve hashes, build SHAs, costs, actor histograms and all invalid attempts. Matrix-a: 1/4, token cap refusal after16 requests. Matrix-b: 1/4, dollar-reservation refusal after46 requests AND build drift7389ece9 to84e18faa. Zero scored rows, zero nomemory rows, no paired deltas; saturation UNKNOWN."
+    }
+  ],
+  "matrix_attempts": [
+    {
+      "name": "matrix-20261010-a",
+      "outcome": "INCONCLUSIVE",
+      "observed_runs": 1,
+      "expected_runs": 4,
+      "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "server_after": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "hashes": {
+        "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+        "fixture": "aea1b09a3e282db1212bbcfd3a08d16cca15a7dc0a77b687ce2b05e04ac3d2eb",
+        "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+        "harness": "d03b1e4e0b6b99dfa6a54c0fc88d489f521fcfcea746213a231bd7c031af346c",
+        "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+      },
+      "terminal_cost_usd": 0.61943
+    },
+    {
+      "name": "matrix-20261010-b",
+      "outcome": "INCONCLUSIVE",
+      "observed_runs": 1,
+      "expected_runs": 4,
+      "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "server_after": "84e18faada491cbf5bf8c3d4c03a62c964765109",
+      "hashes": {
+        "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+        "fixture": "aea1b09a3e282db1212bbcfd3a08d16cca15a7dc0a77b687ce2b05e04ac3d2eb",
+        "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+        "harness": "36f0f13b0ca870ae6331c0c83c6baeaa44eec91ac6ac2101c433d7aea9f96cce",
+        "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+      },
+      "terminal_cost_usd": 1.750873
+    }
+  ],
+  "scored_rows": 0,
+  "nomemory_rows": 0,
+  "nomemory_saturates": null,
+  "paired_deltas": [],
+  "known_terminal_cost_subtotal_usd": 2.65969785,
+  "gateway_all_attempt_upper_bound_usd": 6.115312,
+  "remaining_ledger_capacity_usd": 13.884688,
+  "actual_total_cost_usd": null,
+  "cost_limitation": "Killed-cell terminal cost is unknown; service embedding/worker costs are unmetered. Upper bounds are not actual invoice totals.",
+  "shape_changes": {
+    "STOMPY-2685 (B1 reset)": "Worker drain plus explicit derived-graph manifest and full delayed/post-cell diff are required; readiness scope/active-membership limitation and retained archive history must be visible.",
+    "STOMPY-2684 (B1 isolation)": "Private provider gateway, pinned CLI/API compatibility, per-delegate trace association and lead/every-teammate server histograms; environment isolation alone is insufficient.",
+    "STOMPY-2700 (B1 fail-closed)": "Keep INVALID separate from task failure/zero score, retain killed-run unknown terminal cost and every attempt; non-retryable budget reasons and multiple invalidations (STOMPY-2736).",
+    "STOMPY-2692 (B3 grader)": "Separate contract/private-seam checks from real resolver/MCP/SQL correctness; portable pinned grader; explicit optional-bounds and agent-test-quality coverage.",
+    "STOMPY-2697 (B5 report)": "All-attempt cost ledger, terminal-vs-upper-bound distinction, incomplete matrices and multiple invalidation reasons; paired deltas only for complete valid pairs, no n=2 significance claims.",
+    "STOMPY-2691 (B2.5 calibration)": "Calibrate task/agent token and conservative dollar needs before the fixed n=2 envelope; cached history is not free. Nomemory saturation remains unknown; use fresh holdouts.",
+    "STOMPY-2694 (B4 release workflow)": "Acquire an acknowledged stable deployment window or deployment lock in addition to fixture serialization; server drift invalidates the comparison. Carry global spend reservations and compatibility pins into CI."
+  },
+  "validation": {
+    "spike_tests_passed": 57,
+    "base_head_failure_error_sets_equal": true,
+    "existing_collection_error": "longmemeval.tests.test_adapter",
+    "max_module_lines": 500,
+    "raised_size_baselines": false
+  },
+  "decision_needed": "Another unchanged full matrix needs an $18 reservation; only $13.884688 remains. No further paid attempt under the current shape. Review the findings and revise the envelope/deployment window explicitly before continuing."
+}

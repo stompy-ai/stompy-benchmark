@@ -1,0 +1,55 @@
+{
+  "condition": "stompy",
+  "repeat": 1,
+  "outcome": "INVALID",
+  "score": null,
+  "cost_usd": 0.6194299500000001,
+  "model": "claude-sonnet-4-6",
+  "runtime_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+  "wall_seconds": 307.08,
+  "exit_code": 1,
+  "deliberately_killed": false,
+  "reason": "process exit 1",
+  "tool_histograms": {
+    "lead": {
+      "stompy": 2
+    }
+  },
+  "delegated_calls": 0,
+  "teammate_transcripts": [],
+  "delegate_trace_map": {},
+  "launch_env_keys": [
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+    "API_TIMEOUT_MS",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "CLAUDE_CODE_SUBAGENT_MODEL",
+    "CLAUDE_CONFIG_DIR",
+    "ENABLE_TOOL_SEARCH",
+    "HOME",
+    "LANG",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE"
+  ],
+  "gateway": {
+    "charged_upper_bound_usd": 1.377868,
+    "ceiling_usd": 4.5,
+    "tokens": 927675,
+    "token_ceiling": 1000000,
+    "requests": 16,
+    "accepted_requests": 16,
+    "billing_unknown": false
+  },
+  "paid_request_accepted": true,
+  "fixture": {
+    "matched": true,
+    "contexts": 2,
+    "links": 1,
+    "tickets": 1,
+    "parked_or_archived_tickets": 0,
+    "sha256": "0f10d861f40120f37e4486413abbd6b3671843bf023bbc6fd19adb6f49d38de0",
+    "archive_limitation": "Archived contexts and parked tickets are retained; this is a logical reset, not physical deletion."
+  },
+  "rendered_prompt_sha256": "e30c0e5ee5fe55bc65b37674a43afdc9d69d73ccbf51ad6e7f6d2763c57932e7"
+}

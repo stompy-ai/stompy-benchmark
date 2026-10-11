@@ -1,0 +1,9 @@
+{
+  "exit_code": 1,
+  "failures": [
+    "test_cached_history_can_exceed_one_million_tokens_within_dollar_budget"
+  ],
+  "controls": [
+    "test_gateway_dollar_reservation_still_refuses_overspend"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "kind": "isolation-smoke",
+  "reserved_budget_usd": 1.25,
+  "server_before": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "server_after": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "prompt_sha256": "a8723197c11ea7575b9199e206d602610dd53c0bb65bb39c9c5993f944fcd3f8",
+  "fixture_hash": "0a5ee10361a6a6c316d85a5a2037135a083410892395a61be21a673a165f5386",
+  "harness_hash": "fbe59e0ac5ff29cf06b06e9b4f4286a8c8c7e10d4fceb36974285f5f7609a8bc",
+  "run": {
+    "outcome": "INVALID",
+    "score": null,
+    "cost_usd": null,
+    "reason": "RuntimeError: MCP db_query HTTP 429"
+  }
+}

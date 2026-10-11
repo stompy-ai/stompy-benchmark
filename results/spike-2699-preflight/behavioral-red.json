@@ -1,0 +1,41 @@
+{
+  "green": 11,
+  "red": [
+    {
+      "revert": "environment_leak",
+      "exit_code": 1,
+      "failures": [
+        "test_operator_credentials_are_scrubbed"
+      ],
+      "controls": [
+        "test_complete_matrix_control",
+        "test_lead_and_teammate_histograms_and_no_double_count",
+        "test_success_control"
+      ]
+    },
+    {
+      "revert": "accept_killed_process",
+      "exit_code": 1,
+      "failures": [
+        "test_killed_cell_is_invalid_even_with_partial_score"
+      ],
+      "controls": [
+        "test_complete_matrix_control",
+        "test_lead_and_teammate_histograms_and_no_double_count",
+        "test_success_control"
+      ]
+    },
+    {
+      "revert": "allow_operator_connector",
+      "exit_code": 1,
+      "failures": [
+        "test_stray_mcp_server_in_teammate_is_invalid"
+      ],
+      "controls": [
+        "test_complete_matrix_control",
+        "test_lead_and_teammate_histograms_and_no_double_count",
+        "test_success_control"
+      ]
+    }
+  ]
+}

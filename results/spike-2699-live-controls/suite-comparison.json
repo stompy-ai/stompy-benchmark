@@ -1,0 +1,16 @@
+{
+  "base": {
+    "passed": 0,
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  },
+  "head": {
+    "passed": 44,
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  }
+}

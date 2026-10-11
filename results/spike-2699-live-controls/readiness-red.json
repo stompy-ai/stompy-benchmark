@@ -1,0 +1,17 @@
+{
+  "exit_code": 1,
+  "failures": [
+    "test_failed_jobs_refuse_immediately[dead_letter]",
+    "test_failed_jobs_refuse_immediately[failed]",
+    "test_failed_jobs_refuse_immediately[unknown]"
+  ],
+  "controls": [
+    "test_delayed_pending_drains_before_two_ready_observations",
+    "test_malformed_or_wrong_scope_readiness_refused[change0]",
+    "test_malformed_or_wrong_scope_readiness_refused[change1]",
+    "test_malformed_or_wrong_scope_readiness_refused[change2]",
+    "test_malformed_or_wrong_scope_readiness_refused[change3]",
+    "test_malformed_or_wrong_scope_readiness_refused[change4]",
+    "test_pending_timeout_never_launches"
+  ]
+}

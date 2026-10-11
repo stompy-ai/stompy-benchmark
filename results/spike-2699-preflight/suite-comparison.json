@@ -1,0 +1,20 @@
+{
+  "base": {
+    "tests": 1,
+    "failures": [],
+    "errors": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  },
+  "head": {
+    "tests": 26,
+    "failures": [],
+    "errors": [
+      "::longmemeval.tests.test_adapter"
+    ]
+  },
+  "added_failures": [],
+  "added_errors": [],
+  "command": "python -m pytest --ignore=tasks --ignore=runs --continue-on-collection-errors --junitxml=OUTPUT -q",
+  "limitation": "Existing longmemeval collection error: tqdm missing; installing tqdm in a disposable environment reveals missing untracked locomo/task_eval/stompy_utils.py on both base and head. Existing adapter tests did not execute."
+}

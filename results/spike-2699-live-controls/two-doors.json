@@ -1,0 +1,62 @@
+{
+  "server_before": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "server_after": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "fix_commit": "e6524c64b701de1fbe2699a3b314fa0e78beccd8",
+  "reset_workflow_run": "38013304851",
+  "rest_contexts_status": 200,
+  "rest_foreign_status": 404,
+  "identity_status": 403,
+  "identity": {
+    "user_id": null,
+    "auth_type": null,
+    "tier": null,
+    "region": null,
+    "region_confirmed": null
+  },
+  "mcp_project": {
+    "project": "stompy_benchmark",
+    "schema": "stompy_benchmark",
+    "detail": "summary",
+    "kg": {
+      "origin": "unknown",
+      "category": null,
+      "lifecycle_state": null,
+      "purpose": null,
+      "intent": null
+    },
+    "edges": [],
+    "stats": {
+      "sessions": 5,
+      "contexts": 2,
+      "memories": 1
+    },
+    "hint": "Pass detail='verbose' for recent sessions, top contexts, and sizes.",
+    "is_shared": true,
+    "my_role": "owner",
+    "members": [
+      {
+        "user_id": "51",
+        "display_name": "Markus",
+        "handle": "morning-breeze-69323486",
+        "role": "owner",
+        "joined_at": 1791576188.1986575
+      }
+    ],
+    "member_count": 1
+  },
+  "database": [
+    {
+      "database": "dementia",
+      "schema": "stompy_benchmark"
+    }
+  ],
+  "negative_preflight": {
+    "own_schema": "stompy_benchmark",
+    "other_project": "stompy",
+    "refusal": "INVALID_PROJECT"
+  },
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "principal_note": "auth/me is intentionally forbidden to project keys. Owner 51 is observed in MCP members; auth_type=project_api_key and beta tier clamp are derived from the deployed server_hosted.py authentication path, not exposed by auth/me. The configured key label is benchmark-harness; REST user_id would be that label plus (api key).",
+  "identity_evidence": "MCP membership and scoped-door behavior observed; principal fields code-derived",
+  "passed": true
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "revert": "adaptive_display",
+    "exit_code": 1,
+    "failures": [
+      "test_cli_adaptive_display_is_normalized_before_counting"
+    ],
+    "controls": [
+      "test_incomplete_stream_is_unknown",
+      "test_model_allowlist_has_matching_rate_table",
+      "test_only_fixed_model_and_routes_reach_upstream",
+      "test_preacceptance_refusal_billing[400-False]",
+      "test_preacceptance_refusal_billing[429-False]",
+      "test_preacceptance_refusal_billing[529-True]",
+      "test_provider_failure_retains_reservation_and_stops_next_billable_call",
+      "test_unsupported_server_context_editing_is_removed",
+      "test_upstream_rebuilds_headers_with_provider_key_only"
+    ]
+  },
+  {
+    "revert": "server_context_editing",
+    "exit_code": 1,
+    "failures": [
+      "test_unsupported_server_context_editing_is_removed"
+    ],
+    "controls": [
+      "test_cli_adaptive_display_is_normalized_before_counting",
+      "test_incomplete_stream_is_unknown",
+      "test_model_allowlist_has_matching_rate_table",
+      "test_only_fixed_model_and_routes_reach_upstream",
+      "test_preacceptance_refusal_billing[400-False]",
+      "test_preacceptance_refusal_billing[429-False]",
+      "test_preacceptance_refusal_billing[529-True]",
+      "test_provider_failure_retains_reservation_and_stops_next_billable_call",
+      "test_upstream_rebuilds_headers_with_provider_key_only"
+    ]
+  }
+]
