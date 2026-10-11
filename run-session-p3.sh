@@ -89,6 +89,20 @@ echo "════════════════════════�
 
 bash "$CONFIGS_DIR/phase3/clone-for-swarm.sh" "$MODEL" "$CONDITION"
 
+# ─── MCP isolation ───────────────────────────────────────────────
+# The run must see ONLY the MCP servers its condition declares. Without
+# --strict-mcp-config the headless agent also loads the operator's user-level
+# servers (107 tools across ~12 servers on the operator's machine), so a
+# "stompy" run could use the operator's identity and a "nomemory" run could
+# reach Stompy anyway. gen1 and gen2 both ran that way (results/gen2/summary.md).
+if [[ "$CONDITION" == stompy ]]; then
+  MCP_CONFIG_FILE="$RUN_DIR/.mcp.json"
+else
+  MCP_CONFIG_FILE="$RUN_DIR/.mcp-none.json"
+  echo '{"mcpServers":{}}' > "$MCP_CONFIG_FILE"
+fi
+MCP_ARGS=(--strict-mcp-config --mcp-config "$MCP_CONFIG_FILE")
+
 # ─── Dry run check ────────────────────────────────────────────────
 
 if [ "$DRY_RUN" = "--dry-run" ]; then
@@ -102,6 +116,7 @@ if [ "$DRY_RUN" = "--dry-run" ]; then
   echo "    --max-turns $MAX_TURNS \\"
   echo "    --max-budget-usd $MAX_BUDGET \\"
   echo "    --no-session-persistence \\"
+  echo "    --strict-mcp-config --mcp-config $MCP_CONFIG_FILE \\"
   echo "    --permission-mode bypassPermissions"
   echo ""
   echo "  Output → $RESULTS_DIR/result.json"
@@ -143,6 +158,7 @@ timeout --kill-after="$SOFT_TIMEOUT_OFFSET" -s INT "$SOFT_TIMEOUT" claude -p "$P
   --max-turns "$MAX_TURNS" \
   --max-budget-usd "$MAX_BUDGET" \
   --no-session-persistence \
+  "${MCP_ARGS[@]}" \
   --permission-mode bypassPermissions \
   > "$RESULT_FILE_RAW" 2>"$RESULTS_DIR/stderr.log" || {
     EXIT_CODE=$?
@@ -188,6 +204,15 @@ else:
 PYEOF
 
 echo "  Output:   $RESULT_FILE"
+
+# A run whose MCP servers were not exactly its condition's is INVALID: the
+# comparison it feeds is confounded. Record the verdict beside the result and
+# stop before scoring so it cannot be aggregated by accident.
+python3 "$PROJECT_ROOT/runners/check-isolation.py" "$CONDITION" "$RESULT_FILE_RAW" \
+  --write "$RESULTS_DIR/isolation.json" || {
+    echo "✗ RUN INVALID: MCP isolation check failed (see $RESULTS_DIR/isolation.json)"
+    exit 3
+  }
 
 # Inject wall_clock_seconds and phase metadata into the result
 if [ -f "$RESULT_FILE" ] && command -v python3 &>/dev/null; then

@@ -29,7 +29,7 @@ compared *within* and *across* generations, never mixed opportunistically.
 | Generation | What it measures | Status |
 |-----------|------------------|--------|
 | `gen1` | Original Phase 3 baseline (README / `configs/run-matrix.md`) | recorded |
-| `gen2` | Stompy after the recent improvements, same fixture + prompts | to run |
+| `gen2` | Stompy after the recent improvements, same fixture + prompts | run 2026-10-09, n=1 per cell, **not isolated** (see section 4b) — treat as exploratory; a `gen3` run with isolation enforced is the comparable one |
 
 To claim "Stompy improved", re-run the **same matrix in both conditions** under
 `gen2` and compare `gen2` against `gen1`. Never compare a fresh `stompy` run
@@ -56,7 +56,9 @@ Reset (dry-run by default):
 ```
 
 `reset-stompy-state.sh` **archives** contexts (recoverable) and exports each to
-a timestamped manifest under `backups/reset-*/` before removing it.
+a timestamped manifest under `backups/reset-*/` before removing it. It fails
+closed: an empty or unrecognised listing, or a topic whose export did not land,
+exits 1 instead of reporting a clean fixture.
 
 ## 3. Artifacts are append-only
 
@@ -79,6 +81,31 @@ a timestamped manifest under `backups/reset-*/` before removing it.
 
 `--no-session-persistence` and `--permission-mode bypassPermissions` are fixed
 in the runner. Do not tune one condition.
+
+### 4b. Condition isolation (enforced since this section was added)
+
+gen1 and gen2 both ran with the operator's user-level MCP servers connected
+(`results/gen2/summary.md`: stompy-condition agents used `claude_ai_Stompy` /
+`stompy-direct`, the operator's identity, never the injected project-key server;
+nomemory agents had the same connectors available). Memory-vs-no-memory numbers
+from those runs are therefore confounded.
+
+`run-session-p3.sh` now passes `--strict-mcp-config --mcp-config <file>`:
+
+| Condition | MCP servers the agent may see |
+|-----------|-------------------------------|
+| `stompy` | exactly one, `stompy` (the injected project key) |
+| `nomemory` | none (`.mcp-none.json`) |
+
+After every run `runners/check-isolation.py` reads the stream's `system/init`
+event and writes `isolation.json` beside the result. Any other server set, a
+`stompy` server that is `failed`/`needs-auth`, or a missing init event makes the
+run **INVALID** (exit 3, before scoring). An invalid run is never aggregated.
+Tests: `python3 -m unittest discover -s tests/runners`.
+
+Known gap: `runners/opencode.sh` is not yet covered — OpenCode also loads the
+operator's own config, and its init event does not use the same shape. Until it
+has an equivalent check, cross-provider rows (matrix #4, #5) are not comparable.
 
 ## 5. Measurement model
 
@@ -119,6 +146,7 @@ conclusions from a single sample.
 
 ```text
 [ ] backup/archive current runs + results
+[ ] every run dir has isolation.json with ok=true (invalid runs are discarded)
 [ ] ./configs/phase3/reset-stompy-state.sh            # inspect
 [ ] ./configs/phase3/reset-stompy-state.sh --apply    # reset fixture
 [ ] ./configs/phase3/preload-stompy-contexts.sh       # verify canonical topics
