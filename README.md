@@ -107,6 +107,13 @@ export DEMENTIA_API_KEY=your-key-here
 ./run-session-p3.sh claude-opus-4-6 nomemory
 ```
 
+> **Re-running for comparison?** Read [`configs/benchmark-protocol.md`](configs/benchmark-protocol.md)
+> first. The `stompy` condition writes to a live shared Stompy project, so a
+> stale run's architecture lock can leak into the next measurement. Reset the
+> fixture with `./configs/phase3/reset-stompy-state.sh --apply` before the
+> `stompy` run, and archive old runs before re-running. Old results are never
+> deleted: `clone-for-swarm.sh` moves prior run dirs to `runs/_archive/`.
+
 ### Phase 2 (Single-Agent Tasks)
 
 ```bash

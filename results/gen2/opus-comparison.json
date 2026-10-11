@@ -1,0 +1,62 @@
+{
+  "generated_at": 1791559706.339068,
+  "total_runs": 2,
+  "results": [
+    {
+      "model": "claude-opus-4-6",
+      "provider": "anthropic",
+      "runner": "claude-code",
+      "condition": "stompy",
+      "score": 38,
+      "max_score": 40,
+      "tokens": {
+        "input": 5,
+        "output": 1664,
+        "cache_read": 301028,
+        "cache_creation": 5315,
+        "total": 308012
+      },
+      "cost_usd": 5.9511,
+      "timing": {
+        "wall_clock_seconds": 617,
+        "api_seconds": 1088.98
+      },
+      "turns": 5,
+      "is_error": false,
+      "session_id": "900e5424-0116-450d-89bf-291a9d0d6a82",
+      "efficiency": {
+        "tokens_per_point": 8106.0,
+        "cost_per_point": 0.1566,
+        "points_per_minute": 3.6953
+      }
+    },
+    {
+      "model": "claude-opus-4-6",
+      "provider": "anthropic",
+      "runner": "claude-code",
+      "condition": "nomemory",
+      "score": 40,
+      "max_score": 40,
+      "tokens": {
+        "input": 8,
+        "output": 1522,
+        "cache_read": 931956,
+        "cache_creation": 8026,
+        "total": 941512
+      },
+      "cost_usd": 7.7634,
+      "timing": {
+        "wall_clock_seconds": 469,
+        "api_seconds": 947.73
+      },
+      "turns": 7,
+      "is_error": false,
+      "session_id": "59d0977e-382a-44c1-904f-a64d4af7c0c2",
+      "efficiency": {
+        "tokens_per_point": 23538.0,
+        "cost_per_point": 0.1941,
+        "points_per_minute": 5.1173
+      }
+    }
+  ]
+}

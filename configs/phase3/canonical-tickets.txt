@@ -1,0 +1,13 @@
+# Canonical ticket IDs for the Phase 3 stompy fixture (`dollar_flights`).
+#
+# The pristine scenario starts with an (almost) empty ticket board: the lead is
+# supposed to CREATE the five booking tickets as part of the task. Tickets that
+# were created by earlier benchmark runs are residue and are parked by
+# configs/phase3/reset-stompy-state.sh.
+#
+# Rule: a ticket is canonical if it existed BEFORE the first stompy benchmark
+# run (2026-02-28). DF-1 is the pre-benchmark product backlog item; every other
+# ticket on the board was created during a run.
+
+# Pre-benchmark product backlog
+1
