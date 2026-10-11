@@ -74,17 +74,32 @@ echo "════════════════════════�
 echo ""
 echo "── Contexts ───────────────────────────────────────────────────────"
 
+# Fail CLOSED: an empty or unrecognised listing must never read as "no residue".
+# Both CLI JSON shapes are accepted (legacy capitalised keys, API lower-case keys)
+# because a silently different shape is how this script would report a clean
+# fixture over a polluted project. The canonical project always has contexts and
+# DF-1, so zero rows is itself a failure, never a pass.
 TOPICS=$(stompy context list -p "$PROJECT" -o json | python3 -c "
 import json, sys
+rows = json.load(sys.stdin)
+if not isinstance(rows, list) or not rows:
+    sys.exit('empty context listing')
 seen = set()
-for row in json.load(sys.stdin):
-    topic = (row.get('TOPIC') or '').strip()
-    if topic:
-        seen.add(topic)
-print('\n'.join(sorted(seen)))
-")
+for row in rows:
+    topic = (row.get('TOPIC') or row.get('topic') or '').strip()
+    if not topic:
+        sys.exit('context row without a TOPIC/topic key: %r' % sorted(row))
+    seen.add(topic)
+print('\\n'.join(sorted(seen)))
+") || { echo "!! could not read the context list for $PROJECT (empty or unrecognised shape) - refusing to report a clean fixture"; exit 1; }
+
+# Canonical topics that are missing mean the preload has not run; say so.
+while IFS= read -r want; do
+  grep -qxF "$want" <<< "$TOPICS" || echo "  MISSING       $want  (canonical; run preload-stompy-contexts.sh)"
+done < "$CANON_CTX_FILE"
 
 CTX_DRIFT=0
+CTX_FAIL=""
 while IFS= read -r topic; do
   [ -z "$topic" ] && continue
   if grep -qxF "$topic" "$CANON_CTX_FILE"; then
@@ -93,9 +108,17 @@ while IFS= read -r topic; do
     CTX_DRIFT=$((CTX_DRIFT + 1))
     if [ "$APPLY" = true ]; then
       mkdir -p "$MANIFEST_DIR"
-      stompy context recall "$topic" -p "$PROJECT" -o json > "$MANIFEST_DIR/context--${topic}.json" 2>/dev/null || true
+      # The manifest is the restore path: never archive a topic whose export
+      # did not land.
+      EXPORT="$MANIFEST_DIR/context--${topic}.json"
+      if ! stompy context recall "$topic" -p "$PROJECT" -o json > "$EXPORT" 2>/dev/null || [ ! -s "$EXPORT" ]; then
+        echo "  !! export failed for $topic - NOT archived"
+        rm -f "$EXPORT"
+        CTX_FAIL="$CTX_FAIL${CTX_FAIL:+,}$topic"
+        continue
+      fi
       stompy context unlock "$topic" -p "$PROJECT" --force --version all >/dev/null
-      echo "  ARCHIVED      $topic  (export: $MANIFEST_DIR/context--${topic}.json)"
+      echo "  ARCHIVED      $topic  (export: $EXPORT)"
     else
       echo "  WOULD ARCHIVE $topic"
     fi
@@ -109,11 +132,15 @@ echo "── Tickets ───────────────────�
 
 TICKETS=$(stompy ticket list -p "$PROJECT" -o json --limit 200 | python3 -c "
 import json, sys
-for row in json.load(sys.stdin):
-    tid = str(row.get('ID') or '').strip()
-    if tid:
-        print(tid)
-")
+rows = json.load(sys.stdin)
+if not isinstance(rows, list) or not rows:
+    sys.exit('empty ticket listing')
+for row in rows:
+    tid = str(row.get('ID') or row.get('id') or '').strip()
+    if not tid:
+        sys.exit('ticket row without an ID/id key: %r' % sorted(row))
+    print(tid)
+") || { echo "!! could not read the ticket list for $PROJECT (empty or unrecognised shape) - refusing to report a clean fixture"; exit 1; }
 
 TIX_DRIFT=0
 TIX_FAIL=""
@@ -140,6 +167,10 @@ done <<< "$TICKETS"
 
 echo ""
 echo "═══════════════════════════════════════════════════════════════════"
+if [ -n "$CTX_FAIL" ]; then
+  echo "  !! FAILED to export/archive: $CTX_FAIL - fixture is NOT clean."
+  exit 1
+fi
 if [ -n "$TIX_FAIL" ]; then
   echo "  !! FAILED to park: $TIX_FAIL — fixture is NOT clean."
   echo "     The CLI cannot pass the reason the server requires for 'parked'. Use the MCP ticket tool:"
