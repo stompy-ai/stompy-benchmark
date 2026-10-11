@@ -1,0 +1,21 @@
+{
+  "base": "e86788e1",
+  "exit_code": 1,
+  "result": {
+    "failure": [
+      "tests.spike.test_2744_envelope::test_budget_owns_an_isolated_cache_forecast",
+      "tests.spike.test_2744_envelope::test_budget_reason_and_build_drift_both_survive",
+      "tests.spike.test_2744_envelope::test_focused_verification_identical_for_both_arms",
+      "tests.spike.test_2744_envelope::test_known_token_breach_is_not_unknown_billing",
+      "tests.spike.test_2744_envelope::test_local_dollar_refusal_is_nonretryable_and_audited",
+      "tests.spike.test_2744_envelope::test_named_timeout_survives_missing_terminal",
+      "tests.spike.test_2744_envelope::test_report_renders_all_independent_reasons",
+      "tests.spike.test_2744_envelope::test_thirty_dollar_top_up_preserves_all_prior_attempts",
+      "tests.spike.test_2744_envelope::test_timeout_backstop_is_1800_and_cell_dollars_unchanged",
+      "tests.spike.test_2744_envelope::test_token_admission_refusal_distinct_from_dollars"
+    ],
+    "error": [],
+    "passed": 1
+  },
+  "control": "test_unknown_usage_still_stops_without_refund"
+}

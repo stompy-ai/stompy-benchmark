@@ -1,0 +1,23 @@
+{
+  "fix_commit": "1d9fe31",
+  "command": "python3 -m pytest -q --continue-on-collection-errors --junitxml=<output>",
+  "python": "3.11.16",
+  "base_exit": 1,
+  "head_exit": 1,
+  "added_failure_error_ids": [],
+  "base_commit": "e86788e174814e7f68f43f2627c2b794b5258223",
+  "base_result": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ],
+    "passed": 82
+  },
+  "head_result": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ],
+    "passed": 96
+  }
+}

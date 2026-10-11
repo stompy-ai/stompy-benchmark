@@ -1,0 +1,21 @@
+{
+  "cli_version": "2.1.296",
+  "agent_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+  "exit_code": 1,
+  "message_attempts": 1,
+  "provider_calls": 0,
+  "attempts": [
+    {
+      "body_sha256": "546089f0f683ea3521cbe6d7a7a67e8e8072a3c8a92ffcb90ca53def74543438",
+      "stream": true,
+      "model": "claude-sonnet-4-6",
+      "retry_count": "0",
+      "max_tokens": 32000
+    }
+  ],
+  "http_status": 402,
+  "code": "local_budget_refusal",
+  "refusal_reason": "dollar budget exhausted",
+  "network": "none",
+  "credentials": "none"
+}

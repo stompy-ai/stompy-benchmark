@@ -1,0 +1,112 @@
+[
+  {
+    "revert": "refusal_invalidates",
+    "exit_code": 1,
+    "failures": [
+      "test_gateway_refusal_invalidates_even_success_terminal"
+    ],
+    "controls": [
+      "test_clean_terminal_remains_valid"
+    ]
+  },
+  {
+    "revert": "shared_instruction",
+    "exit_code": 1,
+    "failures": [
+      "test_focused_verification_identical_for_both_arms"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "wall_backstop",
+    "exit_code": 1,
+    "failures": [
+      "test_timeout_backstop_is_1800_and_cell_dollars_unchanged"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "ledger_top_up",
+    "exit_code": 1,
+    "failures": [
+      "test_thirty_dollar_top_up_preserves_all_prior_attempts"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "owned_forecast",
+    "exit_code": 1,
+    "failures": [
+      "test_budget_owns_an_isolated_cache_forecast"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "known_token_breach",
+    "exit_code": 1,
+    "failures": [
+      "test_known_token_breach_is_not_unknown_billing"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "retryable_status",
+    "exit_code": 1,
+    "failures": [
+      "test_local_dollar_refusal_is_nonretryable_and_audited"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "named_timeout",
+    "exit_code": 1,
+    "failures": [
+      "test_named_timeout_survives_missing_terminal"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "independent_causes",
+    "exit_code": 1,
+    "failures": [
+      "test_budget_reason_and_build_drift_both_survive"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "token_diagnostic",
+    "exit_code": 1,
+    "failures": [
+      "test_token_admission_refusal_distinct_from_dollars"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  },
+  {
+    "revert": "report_causes",
+    "exit_code": 1,
+    "failures": [
+      "test_report_renders_all_independent_reasons"
+    ],
+    "controls": [
+      "test_unknown_usage_still_stops_without_refund"
+    ]
+  }
+]
