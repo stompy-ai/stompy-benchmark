@@ -1,0 +1,46 @@
+{
+  "isolation-smoke-20261010-a/agent": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "2699-runs/gateway-count-diagnostic-a": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "isolation-smoke-20261010-b/agent": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "2699-runs/gateway-count-diagnostic-b": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "isolation-smoke-20261010-d/agent": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "isolation-smoke-20261010-e/agent": {
+    "upper_bound_usd": 0.0,
+    "state": "settled_upper_bound"
+  },
+  "isolation-smoke-20261010-f/agent": {
+    "upper_bound_usd": 0.494433,
+    "state": "settled_upper_bound"
+  },
+  "stompy-1/agent": {
+    "upper_bound_usd": 0.06372,
+    "state": "settled_upper_bound"
+  },
+  "matrix-20261010-a/stompy-1/agent": {
+    "upper_bound_usd": 1.377868,
+    "state": "settled_upper_bound"
+  },
+  "matrix-20261010-b/stompy-1/agent": {
+    "upper_bound_usd": 4.179291,
+    "state": "settled_upper_bound"
+  },
+  "matrix-20261011-c/stompy-1/agent": {
+    "upper_bound_usd": 3.101303,
+    "state": "settled_upper_bound"
+  }
+}

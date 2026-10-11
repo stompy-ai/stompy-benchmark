@@ -1,0 +1,27 @@
+{
+  "harness_commit": "ce54bb1522d9783d015adfa94c3b92513c723e0d",
+  "orchestrator_exit_code": 1,
+  "cell_timeout_seconds": 900,
+  "cell_wall_seconds": 902.81,
+  "container_exit_code": 137,
+  "observed_reason": "missing terminal result",
+  "cause": "Runner killed the cell at its fixed wall-clock timeout. Final tools ran broad backend unit tests; trace ended in tool_progress. This does not identify a particular hung test.",
+  "gateway_refusal_observed": false,
+  "gateway_accepted_requests": 83,
+  "gateway_settled_upper_bound_usd": 3.101303,
+  "gateway_billing_unknown": false,
+  "terminal_cost_usd": null,
+  "graded": false,
+  "finding": "STOMPY-2744",
+  "known_terminal_subtotal_all_attempts_usd": 2.65969785,
+  "all_attempt_gateway_bound_usd": 9.216615,
+  "ledger_ceiling_usd": 25,
+  "remaining_usd": 15.783385,
+  "actual_total_cost_usd": null,
+  "limitation": "Terminal cost is missing, not zero. Gateway settlement is usage-priced accounting, not an invoice; service costs are unmetered.",
+  "window": {
+    "opened_utc": "2026-10-11T11:05:00Z",
+    "closed_utc": "2026-10-11T11:22:00Z",
+    "authorization": "Markus explicitly confirmed in chat; announced on STOMPY-2699 and STOMPY-2717."
+  }
+}
