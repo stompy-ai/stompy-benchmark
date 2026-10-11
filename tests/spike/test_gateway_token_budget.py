@@ -41,7 +41,7 @@ def test_cached_history_can_exceed_one_million_tokens_within_dollar_budget(
 
 def test_gateway_dollar_reservation_still_refuses_overspend(monkeypatch, tmp_path):
     budget = launched_budget(monkeypatch, tmp_path)
-    budget.reserve(700000, 4096)
+    budget.reserve(400000, 4096)
     with pytest.raises(ValueError, match="budget exhausted"):
-        budget.reserve(700000, 4096)
+        budget.reserve(400000, 4096)
     assert budget.charged <= 4500000

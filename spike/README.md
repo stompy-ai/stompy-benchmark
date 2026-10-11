@@ -5,7 +5,7 @@ The committed preflight report is **INCONCLUSIVE**. It is not a benchmark win,
 production gate, or routed-tenant result. See STOMPY-2711: background entity
 extraction recreated an inferred graph edge after an exact reset. The manifest
 now explicitly includes that one edge from the retained c40570b2 preflight proof,
-observed before any paid agent ran. Stable replay with readiness is still unproven.
+observed before any paid agent ran. Stable replay with readiness subsequently held; the two paid matrices remain INVALID.
 
 The fixture identity is **project key, team project on MAIN, owner 51/admin**.
 It proves nothing about routed tenants. All fixture traffic uses staging MCP.
@@ -62,9 +62,10 @@ Normal schedule: Sonnet `stompy/1, nomemory/1, nomemory/2, stompy/2`; maximum
 $4.50 per cell, $18 reserved total, no automatic retries. The separate killed
 control reserves $0.25 and kills after ten seconds once an upstream request
 has been accepted. The separate isolation smoke reserves $1.25. A shared locked
-ledger at `/private/tmp/stompy-2699-spend.json` caps all attempts together at $20;
+ledger at `/private/tmp/stompy-2699-spend.json` caps all attempts together at $25 (Markus, 2026-10-11);
 unknown attempts keep their reservation. Never delete it to regain budget.
-The planned smoke, kill and matrix ceilings total $19.50. Worker/embedding costs are
+The top-up preserves the prior $6.115312 upper bounds, leaving $18.884688;
+never reprice or remove historical attempts. Worker/embedding costs are
 not metered, and killed processes may lack a terminal billing total; reports
 preserve unknown costs. Do not describe the reserved amount as actual spend.
 Output generations are append-only under ignored `runs/spike/`.
@@ -133,8 +134,7 @@ that a paid Sonnet cell or its teammates completed. Separate live evidence in
 results/spike-2699-live-controls proves the lead/teammate histogram axis and paid
 SIGKILL handling: smoke-f made four accepted requests, CLI cost $0.28939515, gateway
 upper bound $0.494433; the killed cell made one accepted request, gateway upper
-bound $0.063720, terminal cost unknown. All comparison rows remain INVALID pending
-fixture stability; these controls are not an n=2 result.
+bound $0.063720, terminal cost unknown. All comparison rows remain INVALID; these controls are not an n=2 result.
 
 No skills are installed or changed. Skills impact: task agents now get isolated
 configuration and an explicit scoped-memory instruction. The historical fixture
@@ -147,8 +147,8 @@ route is intentionally forbidden; code-derived principal fields are labeled.
 Live matrix attempt `matrix-20261010-a` was INVALID (1/4 rows): the original
 1M cumulative-token cap rejected repeated cached history after 16 requests,
 well before the $4.50 dollar ceiling. Its terminal cost was $0.61942995 and
-gateway upper bound $1.377868; all evidence is retained. The token ceiling is
-now derived from the cell dollar limit divided by the cheapest conservative
+gateway upper bound $1.377868; all evidence is retained. At that point the token ceiling was
+derived from the cell dollar limit divided by the cheapest conservative
 rate ($1/M), giving 4.5M tokens for a $4.50 cell. Worst-case dollar reservation,
 unknown-billing refusal, and the shared $20 ledger remain enforced. This is
 a versioned harness correction, not an automatic retry or discarded attempt.
@@ -159,7 +159,35 @@ Final recorded spike answer: [report](../results/spike-2699-answer/report.md).
 Both matrix attempts are INVALID at 1/4, with no nomemory score or paired delta.
 Matrix-b also encountered the dollar reservation gate and staging build drift.
 All-attempt gateway bounds are $6.115312; known terminal subtotal $2.65969785,
-with killed-run terminal and service costs still unknown. Remaining $13.884688
-cannot reserve another unchanged $18 matrix. Review the explicit envelope and
-deployment-window findings before further paid work. Budget-refusal retries
+with killed-run terminal and service costs still unknown. The original remaining $13.884688 could not reserve another $18 matrix.
+Markus subsequently approved the $25 cumulative ceiling below. Budget-refusal retries
 and multiple invalidation reasons are tracked separately in STOMPY-2736.
+
+## Split-rate follow-up (STOMPY-2699)
+
+Reserve with a 1.5× safety factor using pinned Sonnet 4.6 standard/global
+rates per million tokens: input $3, output $15, 5-minute cache write $3.75,
+1-hour cache write $6, cache read $0.30. Settle confirmed response usage at
+those rates, rounding up once per request to a microdollar. Missing write TTL
+detail uses $6; malformed or missing usage retains the reservation and stops.
+The token ceiling is now 15M for a $4.50 cell, derived from the cheapest rate.
+
+Token counting does not reveal future cache hits. Only matching, unexpired,
+usage-confirmed prefixes earn a cache-read forecast. A separate cold-cache
+liability guard checks affordability at the $6 write rate with 1.5× safety
+before sending. Thus a cache miss remains affordable, but a late request can
+still be refused; this change does not guarantee a completed matrix. Audit
+JSON records rates, safety, estimated split, reservation and cold liability.
+
+The cell ceiling stays $4.50. The existing locked ledger gets a $25 cumulative
+ceiling without deleting, refunding or repricing old attempts. Run once per
+MAJOR release, not per tag. After Claude review/merge, coordinate the staging
+window on STOMPY-2699 and announce the main-merge hold on the release-train
+ticket before starting the approximately 90-minute matrix. SHA drift still
+invalidates the run. No paid run is implied by this code change.
+
+Run `python scripts/red/red_2699_split_rate.py` for named behavioral RED
+proofs and surviving controls. Both Stompy doors: N/A for this gateway-only
+slice; no MCP/REST/CLI surface or surface_contract changes. Skills impact:
+no skill files change; gateway accounting/audit policy and operator budget
+instructions change. STOMPY-2736 owns budget-refusal retries separately.

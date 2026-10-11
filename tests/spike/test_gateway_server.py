@@ -152,3 +152,72 @@ def test_unsupported_server_context_editing_is_removed(proxy):
     }
     assert post(body)[0] == 200
     assert all("context_management" not in payload for _, payload in calls)
+
+
+def test_http_gateway_reserves_confirmed_prefix_at_split_rates(proxy, monkeypatch):
+    from copy import deepcopy
+
+    post, _, tmp = proxy
+    monkeypatch.setattr(server, "BUDGET", Budget(4.5, 15000000))
+    reservations = []
+
+    def measured(path, payload):
+        first = len(payload["messages"]) == 1
+        if path.endswith("count_tokens"):
+            return io.BytesIO(
+                json.dumps({"input_tokens": 10000 if first else 11000}).encode()
+            )
+        reservations.append(deepcopy(server.BUDGET.last_reservation))
+        writes = 10000 if first else 1000
+        return io.BytesIO(
+            json.dumps(
+                {
+                    "usage": {
+                        "input_tokens": 0,
+                        "output_tokens": 1,
+                        "cache_read_input_tokens": 0 if first else 10000,
+                        "cache_creation_input_tokens": writes,
+                        "cache_creation": {
+                            "ephemeral_5m_input_tokens": writes,
+                            "ephemeral_1h_input_tokens": 0,
+                        },
+                    }
+                }
+            ).encode()
+        )
+
+    monkeypatch.setattr(server, "upstream", measured)
+    body = {
+        "model": server.MODEL,
+        "max_tokens": 100,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "first",
+                        "cache_control": {"type": "ephemeral"},
+                    }
+                ],
+            }
+        ],
+    }
+    assert post(body)[0] == 200
+    body["messages"][0]["content"][0].pop("cache_control")
+    body["messages"].append(
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "next", "cache_control": {"type": "ephemeral"}}
+            ],
+        }
+    )
+    assert post(body)[0] == 200
+    assert reservations[0]["split_reservation_usd"] == 0.0585
+    assert reservations[1]["split_reservation_usd"] == 0.012375
+    assert reservations[1]["input_split_estimate"]["cache_read_input_tokens"] == 10000
+    audit = json.loads((tmp / "gateway.json").read_text())
+    assert audit["charged_upper_bound_usd"] == 0.04428
+    assert audit["cold_miss_liability_usd"] == 0
+    assert not audit["billing_unknown"]
