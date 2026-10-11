@@ -46,7 +46,7 @@ def verdict(condition, servers):
 
 
 def main(argv):
-    if len(argv) < 3 or argv[1] not in EXPECTED and False:
+    if len(argv) < 3:
         print(__doc__)
         return 2
     condition, path = argv[1], argv[2]
@@ -56,7 +56,11 @@ def main(argv):
     result = verdict(condition, init_servers(path))
     result["condition"] = condition
     if "--write" in argv:
-        with open(argv[argv.index("--write") + 1], "w") as f:
+        i = argv.index("--write")
+        if i + 1 >= len(argv):
+            print("--write needs a path")
+            return 2
+        with open(argv[i + 1], "w") as f:
             json.dump(result, f, indent=2)
     print("  isolation: %s (%s)" % ("OK" if result["ok"] else "VIOLATED", result["reason"]))
     return 0 if result["ok"] else 1
