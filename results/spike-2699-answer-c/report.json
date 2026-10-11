@@ -1,0 +1,112 @@
+{
+  "outcome": "INCONCLUSIVE / NOT RELEASE-READY",
+  "fixture_identity": "project key, team project on MAIN, owner 51/admin",
+  "tenant_limitation": "This proves nothing about routed tenants.",
+  "six": [
+    {
+      "slice": "1. Reset and read-back",
+      "result": "HELD in the tested MAIN-team scope",
+      "evidence": "2 contexts with versions, 1 committed inferred link, 1 ticket with status/body; exact reset and independent delayed full read-back, readiness at four gates, local lock. Both matrix post-cell fixtures matched. Canonical SHA 0f10d861f40120f37e4486413abbd6b3671843bf023bbc6fd19adb6f49d38de0. Point-in-time active-member counts; durable queue identity remains STOMPY-2731; no distributed/deployment lock. Matrix-c also held pre/post full fixture and readiness; staging SHA8602947 stayed stable under the confirmed hold."
+    },
+    {
+      "slice": "2. Isolation",
+      "result": "HELD in the live smoke",
+      "evidence": "Lead stompy:1 and one identified teammate stompy:1, no operator MCP servers; isolated HOME/config and allowlisted env. Negative project preflight refused. Matrix-b also retained lead stompy:2 plus one identified teammate with zero MCP calls. No completed comparison row. Matrix-c lead stompy:3; one teammate trace with zero MCP calls. Histograms retain additional tool-task identities. No operator MCP server observed. Killed run does not prove completed delegation verification."
+    },
+    {
+      "slice": "3. Fail-closed",
+      "result": "HELD",
+      "evidence": "Paid kill accepted 1 request, then SIGKILL137; INVALID with null score and unknown terminal cost; orchestrator exit1, 1/4 cardinality. Both real matrix attempts also stopped INVALID/exit1 at 1/4, never a zero-score row. HTTP retries are distinct from zero automatic cell retries. Matrix-c timed out at900s/container137 and remained INVALID/null score/null terminal cost; orchestrator exit1,1/4; no retry."
+    },
+    {
+      "slice": "4. Frozen task",
+      "result": "HELD as a task artifact; difficulty uncalibrated",
+      "evidence": "One REST-for-MCP lifecycle task at c40570b266df628ed1f5a9260ba77096d8bfe71a, historical sanitized fixture including a pre-agent observed derived edge. No completed solution score; nomemory never launched. Matrix-c shows the fixed15-minute wall-clock envelope did not permit completion; task difficulty and nomemory saturation remain uncalibrated."
+    },
+    {
+      "slice": "5. Trusted grader",
+      "result": "HELD for the disclosed eight contract oracles",
+      "evidence": "Pinned networkless grader outside agent; untouched snapshot 8 named failures at exit1, reference 8 passes at exit0, independently verified by Fable. Three critical checks separate from five points. Private-resolver path coupling; real MCP callable and SQL unexecuted; optional bounds and agent test quality unscored. No matrix submission graded because both attempts were INVALID. Matrix-c was not graded because it lacked a terminal result. Earlier8RED/8GREEN proof unchanged."
+    },
+    {
+      "slice": "6. Report and comparison",
+      "result": "Report generation HELD; n=2 comparison NOT HELD",
+      "evidence": "Generated reports preserve hashes, build SHAs, costs, actor histograms and all invalid attempts. Matrix-a: 1/4, token cap refusal after16 requests. Matrix-b: 1/4, dollar-reservation refusal after46 requests AND build drift7389ece9 to84e18faa. Zero scored rows, zero nomemory rows, no paired deltas; saturation UNKNOWN. Matrix-c also INCONCLUSIVE1/4:83acceptedrequests,6,160,949tokens,$3.101303 gateway bound, stable build/fixture, fixed900s timeout. No budget refusal observed; no nomemory rows or paired deltas."
+    }
+  ],
+  "matrix_attempts": [
+    {
+      "name": "matrix-20261010-a",
+      "outcome": "INCONCLUSIVE",
+      "observed_runs": 1,
+      "expected_runs": 4,
+      "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "server_after": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "hashes": {
+        "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+        "fixture": "aea1b09a3e282db1212bbcfd3a08d16cca15a7dc0a77b687ce2b05e04ac3d2eb",
+        "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+        "harness": "d03b1e4e0b6b99dfa6a54c0fc88d489f521fcfcea746213a231bd7c031af346c",
+        "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+      },
+      "terminal_cost_usd": 0.61943
+    },
+    {
+      "name": "matrix-20261010-b",
+      "outcome": "INCONCLUSIVE",
+      "observed_runs": 1,
+      "expected_runs": 4,
+      "server_before": "7389ece91bd6911c0b6030c2f47a991c494ebcd4",
+      "server_after": "84e18faada491cbf5bf8c3d4c03a62c964765109",
+      "hashes": {
+        "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+        "fixture": "aea1b09a3e282db1212bbcfd3a08d16cca15a7dc0a77b687ce2b05e04ac3d2eb",
+        "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+        "harness": "36f0f13b0ca870ae6331c0c83c6baeaa44eec91ac6ac2101c433d7aea9f96cce",
+        "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+      },
+      "terminal_cost_usd": 1.750873
+    },
+    {
+      "name": "matrix-20261011-c",
+      "outcome": "INCONCLUSIVE",
+      "observed_runs": 1,
+      "expected_runs": 4,
+      "server_before": "8602947abab765bbfbcc105e03416de72953e15d",
+      "server_after": "8602947abab765bbfbcc105e03416de72953e15d",
+      "hashes": {
+        "prompt": "1d192479488d59b9b90b4c68d5327e98705e41283c7d81ad4bf6829e64587539",
+        "fixture": "aea1b09a3e282db1212bbcfd3a08d16cca15a7dc0a77b687ce2b05e04ac3d2eb",
+        "scorer": "136537e902840b326e8edfdb3e03640156c9f6a10e74d8b6b828c5699408e694",
+        "harness": "79df756214e2727503972e8a22cd87f69ac98076943dead441efa0c79718c4eb",
+        "snapshot_sha": "c40570b266df628ed1f5a9260ba77096d8bfe71a"
+      },
+      "terminal_cost_usd": null,
+      "gateway_bound_usd": 3.101303,
+      "reason": "900s timeout; missing terminal result"
+    }
+  ],
+  "scored_rows": 0,
+  "nomemory_rows": 0,
+  "nomemory_saturates": null,
+  "paired_deltas": [],
+  "known_terminal_cost_subtotal_usd": 2.65969785,
+  "gateway_all_attempt_upper_bound_usd": 9.216615,
+  "remaining_ledger_capacity_usd": 15.783385,
+  "actual_total_cost_usd": null,
+  "cost_limitation": "Paid kill and matrix-c terminal costs remain unknown; service costs unmetered. Known terminal subtotal remains $2.65969785, gateway bounds total $9.216615. A generated known-cost subtotal of zero for matrix-c is not a free run.",
+  "shape_changes": {
+    "STOMPY-2685 (B1 reset)": "Worker drain plus explicit derived-graph manifest and full delayed/post-cell diff are required; readiness scope/active-membership limitation and retained archive history must be visible.",
+    "STOMPY-2684 (B1 isolation)": "Private provider gateway, pinned CLI/API compatibility, per-delegate trace association and lead/every-teammate server histograms; environment isolation alone is insufficient.",
+    "STOMPY-2700 (B1 fail-closed)": "Keep INVALID separate from task failure/zero score, retain killed-run unknown terminal cost and every attempt; non-retryable budget reasons and multiple invalidations (STOMPY-2736). Record explicit timeout cause while preserving null score and unknown terminal cost (2744/2736).",
+    "STOMPY-2692 (B3 grader)": "Separate contract/private-seam checks from real resolver/MCP/SQL correctness; portable pinned grader; explicit optional-bounds and agent-test-quality coverage.",
+    "STOMPY-2697 (B5 report)": "All-attempt cost ledger, terminal-vs-upper-bound distinction, incomplete matrices and multiple invalidation reasons; paired deltas only for complete valid pairs, no n=2 significance claims. Distinguish zero known-cost subtotal from unknown total for timed-out rows.",
+    "STOMPY-2691 (B2.5 calibration)": "Calibrate task/agent token and conservative dollar needs before the fixed n=2 envelope; cached history is not free. Nomemory saturation remains unknown; use fresh holdouts. Calibrate wall-clock and task verification workload (STOMPY-2744), not only dollars/tokens.",
+    "STOMPY-2694 (B4 release workflow)": "Acquire an acknowledged stable deployment window or deployment lock in addition to fixture serialization; server drift invalidates the comparison. Carry global spend reservations and compatibility pins into CI."
+  },
+  "validation": {
+    "artifact_checks": "Full pre/post fixture diff, INVALID/null/cardinality/build/ledger assertions, regenerated report equality and exact-key/provider-prefix scan. Evidence-only PR; no harness/test/prompt/scorer changes. Prior merged PR11 retains73GREEN and exact namedRED proofs; no new RED claimed."
+  },
+  "decision_needed": "Review STOMPY-2744 wall-clock/task verification calibration. No automatic retry; remaining $15.783385 cannot reserve a fresh $18 matrix. No nomemory saturation or benchmark advantage claim.",
+  "ledger_ceiling_usd": 25
+}

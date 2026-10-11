@@ -1,0 +1,74 @@
+[
+  {
+    "actor": "lead",
+    "sha256": "ace23b3c1a42ef9b82450933bb7581479486d7b91e68b3a368bf4b018655edcc",
+    "events": 336,
+    "tool_counts": {
+      "mcp__stompy__project_brief": 1,
+      "mcp__stompy__context_search": 1,
+      "mcp__stompy__recall_batch": 1,
+      "Bash": 69,
+      "Read": 25,
+      "TaskCreate": 3,
+      "TaskUpdate": 5,
+      "Agent": 1,
+      "Write": 4,
+      "Edit": 3,
+      "ListAgents": 1
+    },
+    "last_event_types": [
+      [
+        "tool_progress",
+        null
+      ],
+      [
+        "user",
+        null
+      ],
+      [
+        "assistant",
+        null
+      ],
+      [
+        "system",
+        "task_started"
+      ],
+      [
+        "tool_progress",
+        null
+      ]
+    ]
+  },
+  {
+    "actor": "agent-a36560bb757bebc04",
+    "sha256": "efa8e494f76afc119f43c95d011a9a2fdc72f6a75c39f999eaada0f0100a2a34",
+    "events": 139,
+    "tool_counts": {
+      "Bash": 26,
+      "Read": 6,
+      "Write": 2
+    },
+    "last_event_types": [
+      [
+        "assistant",
+        null
+      ],
+      [
+        "user",
+        null
+      ],
+      [
+        "attachment",
+        null
+      ],
+      [
+        "attachment",
+        null
+      ],
+      [
+        "assistant",
+        null
+      ]
+    ]
+  }
+]
