@@ -4,9 +4,15 @@ from decimal import Decimal
 from threading import Lock
 
 try:
+    from .gateway_cache import CacheForecast
     from .gateway_rates import FIELDS, MODEL, RATES, SAFETY, count, rounded, usage_cost
 except ImportError:  # Gateway container invokes gateway_server.py directly.
+    from gateway_cache import CacheForecast
     from gateway_rates import FIELDS, MODEL, RATES, SAFETY, count, rounded, usage_cost
+
+
+class BudgetRefusal(ValueError):
+    """Permanent local refusal, never a provider rate limit."""
 
 
 class Budget:
@@ -17,10 +23,16 @@ class Budget:
         self.charged = self.tokens = self.requests = 0
         self.accepted_requests = 0
         self.unknown = False
+        self.refusal_reason: str | None = None
+        self.cache_forecast = CacheForecast()
         self.lock = Lock()
         self.pending: list[tuple[int, int, int]] = []
         self.cache_misses = 0
         self.last_reservation: dict = {}
+
+    def refuse(self, reason: str) -> None:
+        self.refusal_reason = reason
+        raise BudgetRefusal(reason)
 
     @property
     def liability(self) -> int:
@@ -30,7 +42,9 @@ class Budget:
         self, input_tokens: int, requested_output: int, split: dict | None = None
     ) -> tuple[int, int, int]:
         if self.unknown:
-            raise ValueError("previous request has unknown billing")
+            self.refuse("previous request has unknown billing")
+        if self.refusal_reason:
+            self.refuse(self.refusal_reason)
         count(input_tokens)
         count(requested_output)
         split = (
@@ -55,12 +69,14 @@ class Budget:
             int((Decimal(available) / SAFETY - cold_input) // self.rates["output"]),
             self.token_ceiling - self.tokens - input_tokens,
         )
+        if self.token_ceiling - self.tokens - input_tokens < 1:
+            self.refuse("token ceiling exceeded")
         if output < 1:
-            raise ValueError("gateway budget exhausted")
+            self.refuse("dollar budget exhausted")
         amount = rounded(SAFETY * (estimated_input + output * self.rates["output"]))
         cold = rounded(SAFETY * (cold_input + output * self.rates["output"]))
         if amount > cold or cold > available:
-            raise ValueError("gateway budget exhausted")
+            self.refuse("dollar budget exhausted")
         reserved_tokens = input_tokens + output
         self.pending.append((amount, reserved_tokens, cold))
         self.charged += amount
@@ -95,16 +111,15 @@ class Budget:
         except (ValueError, TypeError, StopIteration):
             self.unknown = True
             return
-        if (
-            cost > row[2]
-            or self.tokens - reserved_tokens + actual_tokens > self.token_ceiling
-        ):
+        if cost > row[2]:
             self.unknown = True
             return
         self.cache_misses += cost > reservation
         self.pending.remove(row)
         self.charged += cost - reservation
         self.tokens += actual_tokens - reserved_tokens
+        if self.tokens > self.token_ceiling:
+            self.refusal_reason = "token ceiling exceeded"
 
     def snapshot(self) -> dict:
         return {
@@ -115,6 +130,7 @@ class Budget:
             "requests": self.requests,
             "accepted_requests": self.accepted_requests,
             "billing_unknown": self.unknown,
+            "refusal_reason": self.refusal_reason,
             "pricing_policy": "sonnet-4-6-split-2026-10-11",
             "rates_usd_per_million": {k: str(v) for k, v in self.rates.items()},
             "reservation_safety_factor": str(SAFETY),

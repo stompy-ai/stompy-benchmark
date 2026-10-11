@@ -77,7 +77,7 @@ def test_provider_failure_retains_reservation_and_stops_next_billable_call(
     code, body = post({"model": server.MODEL, "messages": [], "max_tokens": 100})
     assert code == 502 and "sensitive" not in json.dumps(body)
     assert json.loads((tmp / "gateway.json").read_text())["billing_unknown"]
-    assert post({"model": server.MODEL, "messages": [], "max_tokens": 100})[0] == 429
+    assert post({"model": server.MODEL, "messages": [], "max_tokens": 100})[0] == 402
     assert calls.count("/v1/messages") == 1
 
 

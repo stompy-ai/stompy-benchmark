@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 LEDGER = Path("/private/tmp/stompy-2699-spend.json")
-CEILING = 25.0  # Markus, STOMPY-2699, 2026-10-11; prior attempts stay charged.
+CEILING = 30.0  # Markus, STOMPY-2744, 2026-10-11; prior attempts stay charged.
 
 
 @contextmanager
