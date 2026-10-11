@@ -54,5 +54,20 @@ class CliTests(unittest.TestCase):
         self.assertEqual(self.run_cli("nomemory", "not json\n"), 1)
 
 
+class UsageTests(unittest.TestCase):
+    def test_write_without_a_path_is_a_usage_error_not_a_traceback(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".ndjson", delete=False) as f:
+            f.write(stream([]))
+        try:
+            r = subprocess.run([sys.executable, SCRIPT, "nomemory", f.name, "--write"], capture_output=True)
+            self.assertEqual(r.returncode, 2)
+            self.assertNotIn(b"Traceback", r.stderr)
+        finally:
+            os.unlink(f.name)
+
+    def test_unknown_condition_is_a_usage_error(self):
+        self.assertEqual(subprocess.run([sys.executable, SCRIPT, "bogus", "/dev/null"], capture_output=True).returncode, 2)
+
+
 if __name__ == "__main__":
     unittest.main()
