@@ -1,0 +1,15 @@
+{
+  "base": "9ecc784",
+  "exit_code": 1,
+  "test": "tests/spike/test_split_rates.py",
+  "result": {
+    "failure": [
+      "tests.spike.test_split_rates::test_fractional_cache_read_rounds_up_once_per_request",
+      "tests.spike.test_split_rates::test_reservation_applies_one_point_five_safety",
+      "tests.spike.test_split_rates::test_settlement_prices_actual_cache_categories"
+    ],
+    "error": [],
+    "passed": 1
+  },
+  "control": "test_unknown_usage_preserves_charge_and_refuses_next_request"
+}

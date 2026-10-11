@@ -7,7 +7,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 LEDGER = Path("/private/tmp/stompy-2699-spend.json")
-CEILING = 20.0
+CEILING = 25.0  # Markus, STOMPY-2699, 2026-10-11; prior attempts stay charged.
 
 
 @contextmanager
@@ -37,7 +37,9 @@ def reserve(identity, amount, path=LEDGER):
             sum(row["upper_bound_usd"] for row in data.values()) + amount
             > CEILING + 1e-9
         ):
-            raise ValueError("spike $20 ceiling would be exceeded; ask Markus")
+            raise ValueError(
+                f"spike ${CEILING:g} ceiling would be exceeded; ask Markus"
+            )
         data[identity] = {"upper_bound_usd": amount, "state": "reserved"}
 
 

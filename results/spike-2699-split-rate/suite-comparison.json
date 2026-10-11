@@ -1,0 +1,23 @@
+{
+  "base": "9ecc784a32907890d9852aa09f6cf7226cd81817",
+  "fix_commit": "bfab41d",
+  "command": "python -m pytest -q --continue-on-collection-errors --junitxml=<output>",
+  "python": "3.11.16",
+  "base_exit": 1,
+  "head_exit": 1,
+  "base_result": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ],
+    "passed": 57
+  },
+  "head_result": {
+    "failure": [],
+    "error": [
+      "::longmemeval.tests.test_adapter"
+    ],
+    "passed": 73
+  },
+  "added_failure_error_ids": []
+}

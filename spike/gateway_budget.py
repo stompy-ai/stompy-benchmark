@@ -1,86 +1,124 @@
-"""Conservative Sonnet 4.6 budget, in integer microdollars; no free unknowns.
+"""Split-rate reservations with 1.5x safety and a cold-cache liability guard."""
 
-Rates: platform.claude.com/docs/en/about-claude/pricing (2026-10-10).
-Reserve all input at the 1-hour cache-write rate ($6/M); output $15/M.
-Disable premium/server tools and region/fast surcharges at the gateway boundary.
-"""
-
+from decimal import Decimal
 from threading import Lock
 
-MODEL = "claude-sonnet-4-6"
-RATES = {MODEL: {"input": 3, "output": 15, "cache_write": 6, "cache_read": 1}}
+try:
+    from .gateway_rates import FIELDS, MODEL, RATES, SAFETY, count, rounded, usage_cost
+except ImportError:  # Gateway container invokes gateway_server.py directly.
+    from gateway_rates import FIELDS, MODEL, RATES, SAFETY, count, rounded, usage_cost
 
 
 class Budget:
-    def __init__(self, ceiling_usd, token_ceiling):
+    def __init__(self, ceiling_usd: float, token_ceiling: int):
         self.rates = RATES[MODEL]
-        self.ceiling = int(ceiling_usd * 1_000_000)
-        self.token_ceiling = token_ceiling
+        self.ceiling = int(Decimal(str(ceiling_usd)) * 1_000_000)
+        self.token_ceiling = count(token_ceiling)
         self.charged = self.tokens = self.requests = 0
         self.accepted_requests = 0
         self.unknown = False
         self.lock = Lock()
+        self.pending: list[tuple[int, int, int]] = []
+        self.cache_misses = 0
+        self.last_reservation: dict = {}
 
-    def reserve(self, input_tokens, requested_output):
+    @property
+    def liability(self) -> int:
+        return sum(cold - split for split, _, cold in self.pending)
+
+    def reserve(
+        self, input_tokens: int, requested_output: int, split: dict | None = None
+    ) -> tuple[int, int, int]:
         if self.unknown:
             raise ValueError("previous request has unknown billing")
-        remaining = (
-            self.ceiling - self.charged - input_tokens * self.rates["cache_write"]
+        count(input_tokens)
+        count(requested_output)
+        split = (
+            dict(split)
+            if split is not None
+            else {
+                "input_tokens": 0,
+                "cache_creation_input_tokens": input_tokens,
+            }
         )
+        split["output_tokens"] = 0
+        estimated_input = usage_cost(split)
+        if sum(count(split.get(k, 0)) for k in FIELDS) != input_tokens:
+            raise ValueError("input split does not match count")
+        available = self.ceiling - self.charged - self.liability
+        # Cache reads are forecasts, not provider guarantees. Leave enough for
+        # a complete cache miss, including count-estimate safety, before calling.
+        cold_input = input_tokens * self.rates["cache_write"]
         output = min(
             requested_output,
             4096,
-            remaining // self.rates["output"],
+            int((Decimal(available) / SAFETY - cold_input) // self.rates["output"]),
             self.token_ceiling - self.tokens - input_tokens,
         )
-        if input_tokens < 0 or output < 1:
+        if output < 1:
             raise ValueError("gateway budget exhausted")
-        amount = (
-            input_tokens * self.rates["cache_write"] + output * self.rates["output"]
-        )
+        amount = rounded(SAFETY * (estimated_input + output * self.rates["output"]))
+        cold = rounded(SAFETY * (cold_input + output * self.rates["output"]))
+        if amount > cold or cold > available:
+            raise ValueError("gateway budget exhausted")
+        reserved_tokens = input_tokens + output
+        self.pending.append((amount, reserved_tokens, cold))
         self.charged += amount
-        self.tokens += input_tokens + output
+        self.tokens += reserved_tokens
         self.requests += 1
-        return output, amount, input_tokens + output
+        self.last_reservation = {
+            "input_split_estimate": split,
+            "output_token_limit": output,
+            "split_reservation_usd": amount / 1_000_000,
+            "cold_miss_bound_usd": cold / 1_000_000,
+        }
+        return output, amount, reserved_tokens
 
-    def settle(self, reservation, reserved_tokens, usage):
-        fields = (
-            "input_tokens",
-            "output_tokens",
-            "cache_creation_input_tokens",
-            "cache_read_input_tokens",
+    def _pending(self, reservation: int, reserved_tokens: int) -> tuple[int, int, int]:
+        return next(
+            row for row in self.pending if row[:2] == (reservation, reserved_tokens)
         )
+
+    def refund(self, reservation: int, reserved_tokens: int) -> None:
+        row = self._pending(reservation, reserved_tokens)
+        self.pending.remove(row)
+        self.charged -= reservation
+        self.tokens -= reserved_tokens
+
+    def settle(
+        self, reservation: int, reserved_tokens: int, usage: dict | None
+    ) -> None:
+        try:
+            row = self._pending(reservation, reserved_tokens)
+            cost = rounded(usage_cost(usage))
+            actual_tokens = sum(count(usage.get(k, 0)) for k in FIELDS)
+        except (ValueError, TypeError, StopIteration):
+            self.unknown = True
+            return
         if (
-            not isinstance(usage, dict)
-            or any(
-                not isinstance(usage.get(k, 0), int) or usage.get(k, 0) < 0
-                for k in fields
-            )
-            or "input_tokens" not in usage
-            or "output_tokens" not in usage
+            cost > row[2]
+            or self.tokens - reserved_tokens + actual_tokens > self.token_ceiling
         ):
             self.unknown = True
             return
-        # Round cached reads UP to $1/M rather than pretending precision.
-        cost = (
-            usage["input_tokens"] * self.rates["input"]
-            + usage["output_tokens"] * self.rates["output"]
-        )
-        cost += usage.get("cache_creation_input_tokens", 0) * self.rates["cache_write"]
-        cost += usage.get("cache_read_input_tokens", 0) * self.rates["cache_read"]
-        if cost > reservation:
-            self.unknown = True
-            return
+        self.cache_misses += cost > reservation
+        self.pending.remove(row)
         self.charged += cost - reservation
-        self.tokens += sum(usage.get(k, 0) for k in fields) - reserved_tokens
+        self.tokens += actual_tokens - reserved_tokens
 
-    def snapshot(self):
+    def snapshot(self) -> dict:
         return {
-            "charged_upper_bound_usd": self.charged / 1_000_000,
+            "charged_upper_bound_usd": (self.charged + self.liability) / 1_000_000,
             "ceiling_usd": self.ceiling / 1_000_000,
             "tokens": self.tokens,
             "token_ceiling": self.token_ceiling,
             "requests": self.requests,
             "accepted_requests": self.accepted_requests,
             "billing_unknown": self.unknown,
+            "pricing_policy": "sonnet-4-6-split-2026-10-11",
+            "rates_usd_per_million": {k: str(v) for k, v in self.rates.items()},
+            "reservation_safety_factor": str(SAFETY),
+            "cache_estimate_overruns": self.cache_misses,
+            "last_reservation": self.last_reservation,
+            "cold_miss_liability_usd": self.liability / 1_000_000,
         }

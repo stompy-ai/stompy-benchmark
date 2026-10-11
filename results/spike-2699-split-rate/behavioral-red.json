@@ -1,0 +1,54 @@
+[
+  {
+    "revert": "rounded_cache_rate",
+    "exit_code": 1,
+    "failures": [
+      "test_fractional_cache_read_rounds_up_once_per_request",
+      "test_settlement_prices_actual_cache_categories"
+    ],
+    "controls": [
+      "test_unknown_usage_preserves_charge_and_refuses_next_request"
+    ]
+  },
+  {
+    "revert": "remove_safety",
+    "exit_code": 1,
+    "failures": [
+      "test_reservation_applies_one_point_five_safety"
+    ],
+    "controls": [
+      "test_settlement_prices_actual_cache_categories"
+    ]
+  },
+  {
+    "revert": "discard_confirmed_prefix",
+    "exit_code": 1,
+    "failures": [
+      "test_only_confirmed_matching_prefix_receives_cache_read_estimate"
+    ],
+    "controls": [
+      "test_expired_cache_is_cold"
+    ]
+  },
+  {
+    "revert": "ignore_pending_liability",
+    "exit_code": 1,
+    "failures": [
+      "test_pending_cold_liability_prevents_concurrent_overcommit"
+    ],
+    "controls": [
+      "test_warm_guess_cannot_bypass_cold_miss_affordability"
+    ]
+  },
+  {
+    "revert": "remove_top_up",
+    "exit_code": 1,
+    "failures": [
+      "test_top_up_preserves_prior_attempts_and_enforces_twenty_five"
+    ],
+    "controls": [
+      "test_corrupt_ledger_cannot_reset_spend",
+      "test_unknown_attempt_never_releases_its_reservation"
+    ]
+  }
+]

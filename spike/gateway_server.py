@@ -15,9 +15,11 @@ from pathlib import Path
 if __package__:
     from .compatibility import API_VERSION
     from .gateway_budget import MODEL, Budget
+    from .gateway_cache import CacheForecast
 else:
     from compatibility import API_VERSION
     from gateway_budget import MODEL, Budget
+    from gateway_cache import CacheForecast
 
 UPSTREAM = "https://api.anthropic.com"
 KEY = None
@@ -142,8 +144,12 @@ class Handler(BaseHTTPRequestHandler):
                 }
                 with upstream("/v1/messages/count_tokens", counting) as response:
                     count = json.load(response)["input_tokens"]
+                if not hasattr(BUDGET, "cache_forecast"):
+                    BUDGET.cache_forecast = CacheForecast()
                 maximum, reserved, tokens = BUDGET.reserve(
-                    count, body.get("max_tokens", 4096)
+                    count,
+                    body.get("max_tokens", 4096),
+                    BUDGET.cache_forecast.estimate(body, count),
                 )
                 body["max_tokens"] = maximum
                 body["service_tier"] = "standard_only"
@@ -161,6 +167,8 @@ class Handler(BaseHTTPRequestHandler):
                     usage = usage_from(raw, body.get("stream", False))
                     BUDGET.unknown = False
                     BUDGET.settle(reserved, tokens, usage)
+                    if not BUDGET.unknown:
+                        BUDGET.cache_forecast.observe(body, usage)
                     audit()
                     self.send(
                         200,
@@ -184,8 +192,7 @@ class Handler(BaseHTTPRequestHandler):
                         429,
                     }:
                         record_error(error)
-                        BUDGET.charged -= reserved
-                        BUDGET.tokens -= tokens
+                        BUDGET.refund(reserved, tokens)
                         BUDGET.unknown = False
                         audit()
                         self.send(
