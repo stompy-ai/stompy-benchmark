@@ -52,10 +52,10 @@ CASES = [
     (
         "remove_top_up",
         "spend.py",
-        "CEILING = 25.0",
+        "CEILING = 30.0",
         "CEILING = 20.0",
         "test_spend.py",
-        {"test_top_up_preserves_prior_attempts_and_enforces_twenty_five"},
+        {"test_top_up_preserves_prior_attempts_and_enforces_thirty"},
         {
             "test_unknown_attempt_never_releases_its_reservation",
             "test_corrupt_ledger_cannot_reset_spend",

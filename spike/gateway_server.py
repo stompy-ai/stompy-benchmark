@@ -14,12 +14,10 @@ from pathlib import Path
 
 if __package__:
     from .compatibility import API_VERSION
-    from .gateway_budget import MODEL, Budget
-    from .gateway_cache import CacheForecast
+    from .gateway_budget import MODEL, Budget, BudgetRefusal
 else:
     from compatibility import API_VERSION
-    from gateway_budget import MODEL, Budget
-    from gateway_cache import CacheForecast
+    from gateway_budget import MODEL, Budget, BudgetRefusal
 
 UPSTREAM = "https://api.anthropic.com"
 KEY = None
@@ -144,8 +142,6 @@ class Handler(BaseHTTPRequestHandler):
                 }
                 with upstream("/v1/messages/count_tokens", counting) as response:
                     count = json.load(response)["input_tokens"]
-                if not hasattr(BUDGET, "cache_forecast"):
-                    BUDGET.cache_forecast = CacheForecast()
                 maximum, reserved, tokens = BUDGET.reserve(
                     count,
                     body.get("max_tokens", 4096),
@@ -213,6 +209,19 @@ class Handler(BaseHTTPRequestHandler):
                     BUDGET.unknown = True
                     audit()
                     raise
+        except BudgetRefusal as error:
+            audit()
+            self.send(
+                402,
+                {
+                    "type": "error",
+                    "error": {
+                        "type": "invalid_request_error",
+                        "code": "local_budget_refusal",
+                        "message": str(error),
+                    },
+                },
+            )
         except ValueError:
             self.send(
                 429,

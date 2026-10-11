@@ -94,8 +94,9 @@ def write_report(report: dict, output: Path):
     ]
     for r in report["runs"]:
         cost = "unknown" if r.get("cost_usd") is None else f"${r['cost_usd']:.4f}"
+        reason = "; ".join(r.get("reasons", [])) or r.get("reason") or ""
         lines.append(
-            f"| {r['condition']} | {r['repeat']} | {r['outcome']} | {r.get('score')} | {cost} | {r.get('reason') or ''} |"
+            f"| {r['condition']} | {r['repeat']} | {r['outcome']} | {r.get('score')} | {cost} | {reason} |"
         )
     lines += [
         "",

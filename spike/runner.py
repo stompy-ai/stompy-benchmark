@@ -11,6 +11,7 @@ from spike.gateway import evidence as gateway_evidence
 from spike.gateway import gateway
 from spike.integrity import assess_run, tool_histograms, verify_delegates
 from spike.mcp import STAGING
+from spike.invalidation import invalidate
 
 MODEL = "claude-sonnet-4-6"
 
@@ -55,7 +56,7 @@ def run_cell(
     *,
     image: str,
     budget: float = 4.5,
-    timeout: int = 900,
+    timeout: int = 1800,
     kill_after: float | None = None,
 ) -> dict:
     output.mkdir(parents=True, exist_ok=False)
@@ -218,13 +219,17 @@ def _execute_cell(
         ):
             raise ValueError("memory cell never used the scoped MCP server")
     except (ValueError, OSError, KeyError, TypeError) as error:
-        row.update(outcome="INVALID", score=None, reason=str(error))
+        invalidate(row, str(error))
     # Raw evidence remains local. Redact exact supplied credentials before
     # any artifact can be selected for publication; .mcp.json was removed.
     row["gateway"] = gateway_evidence(output)
     row["paid_request_accepted"] = row["gateway"].get("accepted_requests", 0) > 0
     if row["gateway"]["billing_unknown"]:
-        row.update(outcome="INVALID", score=None, reason="gateway billing unknown")
+        invalidate(row, "gateway billing unknown")
+    if row["gateway"].get("refusal_reason"):
+        invalidate(row, row["gateway"]["refusal_reason"], primary=True)
+    if killed and kill_after is None:
+        invalidate(row, f"cell timeout ({timeout:g} s)", primary=True)
     secrets = [os.environ.get("STOMPY_BENCHMARK_API_KEY", "")]
     for path in output.rglob("*"):
         if path.is_file() and not path.is_symlink():

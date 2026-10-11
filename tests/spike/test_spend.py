@@ -5,7 +5,7 @@ import pytest
 from spike.spend import reserve, settle
 
 
-def test_top_up_preserves_prior_attempts_and_enforces_twenty_five(tmp_path):
+def test_top_up_preserves_prior_attempts_and_enforces_thirty(tmp_path):
     p = tmp_path / "ledger.json"
     prior = {
         "old-a": {"upper_bound_usd": 4.179291, "state": "settled_upper_bound"},
@@ -14,11 +14,12 @@ def test_top_up_preserves_prior_attempts_and_enforces_twenty_five(tmp_path):
     p.write_text(json.dumps(prior))
     for n in range(4):
         reserve(str(n), 4.5, p)
+    reserve("extra", 4.5, p)
     with pytest.raises(ValueError, match="ceiling"):
-        reserve("extra", 1, p)
+        reserve("over", 2, p)
     after = json.loads(p.read_text())
     assert {k: after[k] for k in prior} == prior
-    assert sum(x["upper_bound_usd"] for x in after.values()) == pytest.approx(24.115312)
+    assert sum(x["upper_bound_usd"] for x in after.values()) == pytest.approx(28.615312)
 
 
 def test_unknown_attempt_never_releases_its_reservation(tmp_path):

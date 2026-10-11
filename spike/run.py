@@ -9,6 +9,8 @@ from pathlib import Path
 
 from spike.fixture import assert_fixture, fixture_lock, inventory, reset
 from spike.grader import grade
+from spike.instructions import VERIFICATION
+from spike.invalidation import invalidate
 from spike.mcp import MCP, server_build
 from spike.readiness import wait_ready
 from spike.report import build_report, write_report
@@ -95,7 +97,10 @@ def run(args) -> int:
                         if condition == "stompy"
                         else "Work from the supplied source and task. No memory service is available."
                     )
-                    prompt = prompt_template.replace("{{MEMORY_INSTRUCTION}}", memory)
+                    prompt = (
+                        prompt_template.replace("{{MEMORY_INSTRUCTION}}", memory)
+                        + VERIFICATION
+                    )
                     (cell / "prompt.txt").write_text(prompt)
                     killed = args.kill_control and not rows
                     row.update(
@@ -139,17 +144,9 @@ def run(args) -> int:
                     )
                     assert_fixture(manifest, post_fixture)
                     if server_build() != before:
-                        row.update(
-                            outcome="INVALID",
-                            score=None,
-                            reason="server build drift after cell",
-                        )
+                        invalidate(row, "server build drift after cell")
                 except Exception as error:
-                    row.update(
-                        outcome="INVALID",
-                        score=None,
-                        reason=f"{type(error).__name__}: {error}",
-                    )
+                    invalidate(row, f"{type(error).__name__}: {error}")
                 rows.append(row)
                 (cell / "result.json").write_text(json.dumps(row, indent=2) + "\n")
                 if row["outcome"] == "INVALID":

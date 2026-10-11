@@ -191,3 +191,38 @@ proofs and surviving controls. Both Stompy doors: N/A for this gateway-only
 slice; no MCP/REST/CLI surface or surface_contract changes. Skills impact:
 no skill files change; gateway accounting/audit policy and operator budget
 instructions change. STOMPY-2736 owns budget-refusal retries separately.
+
+## Focused verification and failure reasons (STOMPY-2744 / 2736)
+
+The harness appends the same focused verification guidance to both arms from
+`spike/instructions.py`. It names existing lifecycle test modules at c40570b2
+and asks for focused agent-authored REST/MCP tests. The pinned task prompt,
+fixture and scorer are unchanged; harness and rendered-prompt hashes capture
+the new instruction. No private grader test identities or answers are supplied.
+
+Current benchmark-only envelope supersedes the $25 follow-up above: 1800-second
+cell backstop, unchanged $4.50 cell ceiling, cumulative ledger $30. Preserve
+all $9.216615 prior attempt bounds: $20.783385 remains, enough for one $18
+matrix. This grants no retry budget. First Stompy cell runs first; any INVALID
+halts the matrix before the remaining cells. No killed submission is graded.
+
+Local budget refusal is HTTP402 / `invalid_request_error` with code
+`local_budget_refusal`; its audited reason distinguishes `dollar budget exhausted`,
+`token ceiling exceeded`, and unknown billing. Provider rate-limit responses
+remain provider responses. Known usage over the token cap settles its known cost
+and stops with the token reason; it is not labelled unknown billing.
+Runner timeouts are `cell timeout (1800 s)` with wall_seconds. Independent
+causes remain in `reasons` and in the generated report, including later build drift.
+
+`python3 scripts/red/check_2736_cli.py` runs the pinned CLI against the real
+gateway refusal in networkless containers: exactly one local request, exit1,
+zero provider calls and no credential. `python3 scripts/red/red_2744.py` proves
+named behavioral reverts with surviving controls. No CI workflow is added.
+
+No paid run is part of this PR. Before a later reviewed matrix: wait for
+STOMPY-2745 / backend PR1296 to land and staging to settle on its successor SHA;
+verify the main merge queue EMPTY via the queue API, /check-logs clean on that
+SHA (zero schema_not_on_connection in the shared-project walk), guardian quiet,
+and announce the held window. Markus's strict gate excludes staging3c4f0f4d.
+Skills impact: changed operator diagnostics and shared task verification guidance;
+no skill files edited. Both Stompy doors N/A: no backend surface or resolver change.
