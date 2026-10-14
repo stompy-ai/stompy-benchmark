@@ -226,3 +226,33 @@ SHA (zero schema_not_on_connection in the shared-project walk), guardian quiet,
 and announce the held window. Markus's strict gate excludes staging3c4f0f4d.
 Skills impact: changed operator diagnostics and shared task verification guidance;
 no skill files edited. Both Stompy doors N/A: no backend surface or resolver change.
+
+## Design loop on a cheap local model (STOMPY-2800)
+
+The verdict harness pins the Claude Code CLI, which only speaks the Anthropic
+Messages API, so it cannot be driven by a local or non-Anthropic model. The
+design loop is a separate, minimal runner for iterating on the benchmark's
+own design (does the baseline saturate, does any check require recalled
+state, is orientation cost measurable) at zero provider cost.
+
+```sh
+python -m spike.design_run --gen unique-name --condition nomemory --backend /path/to/dementia-production --grade
+python -m spike.design_run --gen unique-name --condition stompy   --backend /path/to/dementia-production --grade
+```
+
+Same task artifact, fixture reset and read-back, snapshot, hidden-test grader
+and prompt rendering as `spike.run`. Differences: the agent is an Ollama model
+(default `gemma4:26b`, `--model`/`--ollama` to change) driven by
+`spike/design_agent.py` with four tools (`bash`, `read_file`, `write_file`,
+`done`) in a no-network hardened container; in the stompy arm five
+`stompy_*` memory tools are executed on the host through `spike.mcp.MCP`
+against the fixture project, so the container never holds the key. One cell
+per invocation; `--no-fixture` skips the staging reset for the stompy arm.
+
+Every row carries `mode: DESIGN`, `cost_usd: 0.0`, no ledger entry and a
+limitation sentence. Design rows are never a verdict about Claude or Stompy
+and are never compared with paid rows. The row adds the first handover
+metrics (STOMPY-2801): `tokens`, `tool_histogram`, `memory_calls` and
+`orientation` (turns, prompt tokens and seconds from launch up to and
+including the first productive act: a `write_file`, or a `bash` command that
+runs pytest). `orientation` is `null` when the agent never became productive.
