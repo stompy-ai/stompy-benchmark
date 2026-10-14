@@ -1,0 +1,101 @@
+{
+  "condition": "stompy",
+  "model": "claude-sonnet-4-6",
+  "runtime_image": "sha256:d3076000923661ae5c3c0717661bff837e6ae42ff68f44e4137dda698e17ba48",
+  "wall_seconds": 462.98,
+  "exit_code": 0,
+  "deliberately_killed": false,
+  "outcome": "OK",
+  "score": null,
+  "cost_usd": 2.0697753,
+  "reason": null,
+  "turns": 57,
+  "usage": {
+    "input_tokens": 3,
+    "cache_creation_input_tokens": 1666,
+    "cache_read_input_tokens": 102877,
+    "output_tokens": 35,
+    "output_tokens_details": {
+      "thinking_tokens": 0
+    },
+    "server_tool_use": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 0
+    },
+    "service_tier": "standard",
+    "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 1666
+    },
+    "inference_geo": "global",
+    "iterations": [],
+    "speed": "standard",
+    "fallback_credit": null
+  },
+  "tool_histograms": {
+    "agent-aae5bbbd4e265d4d6": {},
+    "lead": {
+      "stompy": 2
+    },
+    "toolu_019Ftrh5JsKJruP2rKV5zF7P": {}
+  },
+  "delegated_calls": 1,
+  "teammate_transcripts": [
+    "agent-aae5bbbd4e265d4d6"
+  ],
+  "delegate_trace_map": {
+    "toolu_019Ftrh5JsKJruP2rKV5zF7P": "agent-aae5bbbd4e265d4d6"
+  },
+  "launch_env_keys": [
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+    "API_TIMEOUT_MS",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "CLAUDE_CODE_SUBAGENT_MODEL",
+    "CLAUDE_CONFIG_DIR",
+    "ENABLE_TOOL_SEARCH",
+    "HOME",
+    "LANG",
+    "PATH",
+    "PYTHONDONTWRITEBYTECODE"
+  ],
+  "gateway": {
+    "charged_upper_bound_usd": 2.069798,
+    "ceiling_usd": 4.5,
+    "tokens": 3785336,
+    "token_ceiling": 15000000,
+    "requests": 53,
+    "accepted_requests": 53,
+    "billing_unknown": false,
+    "refusal_reason": null,
+    "pricing_policy": "sonnet-4-6-split-2026-10-11",
+    "rates_usd_per_million": {
+      "input": "3",
+      "output": "15",
+      "cache_write": "6",
+      "cache_write_5m": "3.75",
+      "cache_write_1h": "6",
+      "cache_read": "0.30"
+    },
+    "reservation_safety_factor": "1.5",
+    "cache_estimate_overruns": 0,
+    "last_reservation": {
+      "input_split_estimate": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cache_read_input_tokens": 102877,
+        "cache_creation_input_tokens": 1700,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 1700,
+          "ephemeral_1h_input_tokens": 0
+        }
+      },
+      "output_token_limit": 4096,
+      "split_reservation_usd": 0.148018,
+      "cold_miss_bound_usd": 1.033353
+    },
+    "cold_miss_liability_usd": 0.0
+  },
+  "paid_request_accepted": true
+}
