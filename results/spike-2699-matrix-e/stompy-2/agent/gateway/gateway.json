@@ -1,0 +1,37 @@
+{
+  "charged_upper_bound_usd": 2.069798,
+  "ceiling_usd": 4.5,
+  "tokens": 3785336,
+  "token_ceiling": 15000000,
+  "requests": 53,
+  "accepted_requests": 53,
+  "billing_unknown": false,
+  "refusal_reason": null,
+  "pricing_policy": "sonnet-4-6-split-2026-10-11",
+  "rates_usd_per_million": {
+    "input": "3",
+    "output": "15",
+    "cache_write": "6",
+    "cache_write_5m": "3.75",
+    "cache_write_1h": "6",
+    "cache_read": "0.30"
+  },
+  "reservation_safety_factor": "1.5",
+  "cache_estimate_overruns": 0,
+  "last_reservation": {
+    "input_split_estimate": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_read_input_tokens": 102877,
+      "cache_creation_input_tokens": 1700,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 1700,
+        "ephemeral_1h_input_tokens": 0
+      }
+    },
+    "output_token_limit": 4096,
+    "split_reservation_usd": 0.148018,
+    "cold_miss_bound_usd": 1.033353
+  },
+  "cold_miss_liability_usd": 0.0
+}
