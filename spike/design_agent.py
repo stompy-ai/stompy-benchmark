@@ -20,6 +20,7 @@ from pathlib import Path
 
 OLLAMA = "http://localhost:11434"
 OUTPUT_LIMIT = 12_000
+RETRY_SECONDS = 15
 MEMORY_TOOLS = {
     "stompy_recall_context": ("recall_context", ["topic"]),
     "stompy_context_search": ("context_search", ["query"]),
@@ -184,7 +185,18 @@ def run_agent(chat, sandbox, work: Path, prompt: str, *, condition: str, memory,
             if time.monotonic() - started > timeout:
                 stop = "timeout"
                 break
-            reply = chat(messages, schema)
+            try:
+                reply = chat(messages, schema)
+            except (OSError, ValueError) as error:  # HTTPError/URLError are OSErrors
+                # One retry covers a transient model-server error (seen as HTTP 500 between phases).
+                emit({"type": "error", "turn": turn, "message": str(error)[:500]})
+                time.sleep(RETRY_SECONDS)
+                try:
+                    reply = chat(messages, schema)
+                except (OSError, ValueError) as again:
+                    emit({"type": "error", "turn": turn, "message": str(again)[:500]})
+                    stop = "chat_error"
+                    break
             message = reply.get("message", {})
             calls = [
                 {"id": c.get("id") or f"call-{turn}-{i}", "name": c["function"]["name"],

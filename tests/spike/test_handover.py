@@ -130,3 +130,35 @@ def test_task_artifact_names_match_expected_table():
     assert names and set(names) == set(expected)
     assert sum(e["decision"] for e in expected.values()) == 3
     assert (TASK / "memory-fixture.json").exists() and json.loads((TASK / "memory-fixture.json").read_text())["contexts"] == []
+
+
+def test_agent_loop_survives_model_server_error_with_one_retry(tmp_path, monkeypatch):
+    monkeypatch.setattr(design_agent.time, "sleep", lambda s: None)
+    work = tmp_path / "work"
+    work.mkdir()
+    attempts = []
+
+    def chat(messages, tool_schema):
+        attempts.append(1)
+        if len(attempts) == 1:
+            raise OSError("HTTP Error 500: Internal Server Error")
+        return {"message": {"content": "", "tool_calls": [{"id": "d", "function": {"name": "done", "arguments": {"summary": "ok"}}}]},
+                "prompt_eval_count": 1, "eval_count": 1}
+
+    events = design_agent.run_agent(chat, FakeSandbox(), work, "p", condition="nomemory", memory=None,
+                                    max_turns=5, timeout=60, log=tmp_path / "s.ndjson")
+    assert len(attempts) == 2 and events[-1]["stop_reason"] == "done"
+
+    def broken(messages, tool_schema):
+        raise OSError("HTTP Error 500: Internal Server Error")
+
+    events = design_agent.run_agent(broken, FakeSandbox(), work, "p", condition="nomemory", memory=None,
+                                    max_turns=5, timeout=60, log=tmp_path / "s2.ndjson")
+    assert events[-1]["stop_reason"] == "chat_error"
+    assert any(e["type"] == "error" and "500" in e["message"] for e in events)
+    assert design_agent.metrics(events)["turns"] == 0
+
+
+class FakeSandbox:
+    def exec(self, cmd, timeout):
+        return 0, "ok\n"
