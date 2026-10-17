@@ -66,7 +66,10 @@ def stage_node_project(source: Path, work: Path, image: str, runner=subprocess.r
     for path in [work, *work.rglob("*")]:
         if not path.is_symlink():
             path.chmod(0o777 if path.is_dir() else 0o666)
-    runner(stage_command(work, image), check=True)
+    done = runner(stage_command(work, image), capture_output=True, text=True)
+    (work.parent / "stage.log").write_text((getattr(done, "stdout", "") or "") + (getattr(done, "stderr", "") or ""))
+    if getattr(done, "returncode", 0) != 0:
+        raise RuntimeError(f"dependency install failed (exit {done.returncode}); see stage.log")
 
 
 def file_manifest(work: Path) -> dict:

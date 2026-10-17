@@ -85,6 +85,15 @@ def test_stage_node_project_copies_source_without_node_modules(tmp_path):
     assert (work / "src" / "index.ts").read_text() == "// a"
     assert not (work / "node_modules" / "x").exists()
     assert len(calls) == 1 and "npm ci" in " ".join(calls[0])
+    assert (tmp_path / "stage.log").exists()
+
+    class Failed:
+        returncode = 1
+        stdout, stderr = "", "npm ERR! network"
+
+    with pytest.raises(RuntimeError, match="stage.log"):
+        handover_run.stage_node_project(source, tmp_path / "work2", "img:tag", runner=lambda cmd, **kw: Failed())
+    assert "network" in (tmp_path / "stage.log").read_text()
 
 
 def test_render_prompts_per_condition():
