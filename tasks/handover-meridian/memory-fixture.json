@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "snapshot_sha": null,
+  "source": "meridian-base/ in this repository, copied with dependencies installed offline-ready",
+  "identity": "project key, team project on MAIN, owner 51/admin",
+  "limitation": "Proves nothing about routed tenants.",
+  "note": "Scenario C starts from an EMPTY memory project. Whatever the lead agent records is the memory under test; it is read back after the lead phase as evidence and never asserted against this manifest.",
+  "contexts": [],
+  "links": [],
+  "tickets": []
+}
