@@ -260,3 +260,45 @@ metrics (STOMPY-2801): `tokens`, `tool_histogram`, `memory_calls` and
 `orientation` (turns, prompt tokens and seconds from launch up to and
 including the first productive act: a `write_file`, or a `bash` command that
 runs pytest). `orientation` is `null` when the agent never became productive.
+
+## Scenario C: agent-to-agent handover on meridian-base (STOMPY-2798)
+
+The unit is a HANDOVER, not a task. A LEAD agent delivers part one of the
+Meridian Logistics API (`meridian-base/`, a bare skeleton plus `SPEC.md`) and
+is given three user decisions that concern only part two, so nothing in the
+code it writes reveals them. Then a FRESH sub-agent (new conversation, new
+container, the same working tree, no transcript) delivers part two. The same
+weak local model drives both phases in both arms; the only difference is the
+channel the handover travels through: Stompy memory (`stompy_lock_context`,
+`stompy_ticket`; notes files forbidden) or the repository (a `HANDOVER.md` or
+whatever the lead chooses).
+
+```sh
+python -m spike.handover_run --gen unique-name --condition nomemory --grade
+python -m spike.handover_run --gen unique-name --condition stompy   --grade
+```
+
+Task artifact: `tasks/handover-meridian/` with `prompt-lead.md`,
+`prompt-handover.md`, an EMPTY `memory-fixture.json` (the stompy arm resets the
+fixture project to nothing; what the lead records is the memory under test and
+is read back as `memory-after-lead.json`, never asserted), a hidden Vitest
+oracle `hidden-tests/handover.test.ts` with `expected.json`, and a `reference/`
+solution for both parts. Dependencies are installed once by `npm ci` inside the
+agent image before any agent runs (the only networked step); the agents and the
+grader run with no network. `spike/grade_node.py` copies the oracle beside a
+read-only copy of the submission and runs it alone with the JUnit reporter.
+
+Checks (10, none critical): seven functional checks that a SPEC-faithful agent
+passes without any handover, and three `decision_*` checks that require the
+recorded decisions (event order newest first; operator may not move
+IN_TRANSIT -> AT_HUB; `limit` above 100 is a 400, never clamped). The row adds
+`phases.lead` / `phases.handover` (each with `turns`, `tokens`,
+`tool_histogram`, `memory_calls`, `orientation`, `stop_reason`),
+`memory_recorded` (contexts and tickets the lead left), `decisions`,
+`decisions_passed` and the v1 pass count as `score`.
+
+Acceptance before any paid run on this scenario: across design iterations the
+baseline sub-agent fails at least one `decision_*` check on most runs, the stompy
+sub-agent passes it, and the handover `orientation` delta is measurable. If the
+repository channel does the job as well as memory, that negative result is the
+finding and is reported as such.

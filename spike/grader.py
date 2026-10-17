@@ -19,8 +19,14 @@ EXPECTED = {
 }
 
 
-def parse_grade(xml: Path, exit_code: int) -> dict:
-    invalid = {"outcome": "INVALID", "total_score": None, "total_max": 5, "checks": []}
+def _critical(entry) -> bool:
+    return entry if isinstance(entry, bool) else bool(entry["critical"])
+
+
+def parse_grade(xml: Path, exit_code: int, expected: dict | None = None) -> dict:
+    expected = EXPECTED if expected is None else expected
+    total_max = sum(not _critical(e) for e in expected.values())
+    invalid = {"outcome": "INVALID", "total_score": None, "total_max": total_max, "checks": []}
     if exit_code not in {0, 1} or not xml.exists():
         return {**invalid, "reason": "grader did not complete"}
     try:
@@ -28,14 +34,14 @@ def parse_grade(xml: Path, exit_code: int) -> dict:
     except ET.ParseError:
         return {**invalid, "reason": "invalid grader XML"}
     names = [t.get("name") for t in tests]
-    if len(names) != len(EXPECTED) or set(names) != set(EXPECTED):
+    if len(names) != len(expected) or set(names) != set(expected):
         return {**invalid, "reason": "grader test identity set mismatch"}
     if any(t.find("error") is not None or t.find("skipped") is not None for t in tests):
         return {**invalid, "reason": "grader errors/skips are not task scores"}
     checks = [
         {
             "name": t.get("name"),
-            "critical": EXPECTED[t.get("name")],
+            "critical": _critical(expected[t.get("name")]),
             "passed": t.find("failure") is None,
         }
         for t in tests
@@ -44,14 +50,21 @@ def parse_grade(xml: Path, exit_code: int) -> dict:
     if (exit_code == 0) != passed:
         return {**invalid, "reason": "grader exit contradicts test report"}
     score = sum(c["passed"] for c in checks if not c["critical"])
-    return {
+    result = {
         "outcome": "OK" if passed else "TASK_FAIL",
         "total_score": score,
-        "total_max": 5,
+        "total_max": total_max,
         "critical_passed": all(c["passed"] for c in checks if c["critical"]),
         "checks": checks,
         "grader_image": GRADER_IMAGE,
     }
+    decisions = {
+        c["name"]: c["passed"] for c in checks
+        if isinstance(expected[c["name"]], dict) and expected[c["name"]].get("decision")
+    }
+    if decisions:
+        result["decisions"] = decisions
+    return result
 
 
 def grade(submission: Path, task: Path, output: Path) -> dict:

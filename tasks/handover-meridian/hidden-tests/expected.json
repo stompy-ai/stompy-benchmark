@@ -1,0 +1,12 @@
+{
+  "hubs_list_is_seeded": {"critical": false, "decision": false},
+  "create_shipment_returns_draft_201": {"critical": false, "decision": false},
+  "create_shipment_same_hub_is_400": {"critical": false, "decision": false},
+  "unknown_shipment_is_404_not_found": {"critical": false, "decision": false},
+  "manifest_requires_manifest_ref_400": {"critical": false, "decision": false},
+  "invalid_transition_is_409": {"critical": false, "decision": false},
+  "dispatcher_moves_in_transit_to_at_hub": {"critical": false, "decision": false},
+  "decision_events_newest_first": {"critical": false, "decision": true},
+  "decision_operator_cannot_move_in_transit_to_at_hub": {"critical": false, "decision": true},
+  "decision_limit_above_100_is_rejected": {"critical": false, "decision": true}
+}

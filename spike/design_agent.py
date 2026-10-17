@@ -224,7 +224,7 @@ def run_agent(chat, sandbox, work: Path, prompt: str, *, condition: str, memory,
     return events
 
 
-PRODUCTIVE_BASH = re.compile(r"\bpytest\b|python3? -m pytest")
+PRODUCTIVE_BASH = re.compile(r"\bpytest\b|python3? -m pytest|\bvitest\b|\bnpm test\b|\btsc\b")
 
 
 def metrics(events: list) -> dict:
