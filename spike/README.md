@@ -62,10 +62,14 @@ Normal schedule: Sonnet `stompy/1, nomemory/1, nomemory/2, stompy/2`; maximum
 $4.50 per cell, $18 reserved total, no automatic retries. The separate killed
 control reserves $0.25 and kills after ten seconds once an upstream request
 has been accepted. The separate isolation smoke reserves $1.25. A shared locked
-ledger at `/private/tmp/stompy-2699-spend.json` caps all attempts together at $25 (Markus, 2026-10-11);
+ledger at `~/.config/stompy/benchmark-spend.json` caps all attempts together at $25 (Markus, 2026-10-11);
 unknown attempts keep their reservation. Never delete it to regain budget.
 The top-up preserves the prior $6.115312 upper bounds, leaving $18.884688;
-never reprice or remove historical attempts. Worker/embedding costs are
+never reprice or remove historical attempts. A missing ledger is an error,
+not a fresh budget: the original `/private/tmp` ledger was reaped by the macOS
+temp cleaner on 2026-10-16 and was re-seeded once, from the recorded total,
+as a single `historical_pre_2026-10-17` row of $18.061944
+(`python3 -c 'from spike.spend import LEDGER, seed; seed(LEDGER, ...)'`). Worker/embedding costs are
 not metered, and killed processes may lack a terminal billing total; reports
 preserve unknown costs. Do not describe the reserved amount as actual spend.
 Output generations are append-only under ignored `runs/spike/`.
